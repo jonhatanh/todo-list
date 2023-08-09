@@ -78,16 +78,54 @@
         </nav>
         <main class="content">
             <header>
-                <h1>
-                    Random tasks
-                </h1>
+                <div class="header__title">
+                    <i class="fa-solid fa-list-check"></i>
+                    <h1>
+                        Random tasks
+                    </h1>
+                </div>
                 <div class="header__options">
                     <button>Filter</button>
                 </div>
             </header>
             <div class="task-form">
                 <form id="task-form">
-                    <input type="text" name="title" id="title" placeholder="Add task">
+                    <div class="form-input">
+                        <i class="fa-solid fa-plus"></i>
+                        <input type="text" name="title" id="title" placeholder="Add task">
+                    </div>
+                    <div class="form-input">
+                        <i class="fa-solid fa-align-left"></i>
+                        <input type="text" name="description" id="description" placeholder="Description">
+                    </div>
+                    <div class="form-input">
+                        <i class="fa-regular fa-calendar-days"></i>
+                        <input type="date" name="date" id="date" placeholder="Due Date"
+                        onfocus="this.showPicker()">
+                    </div>
+                    <div class="form-input">
+                        <!-- <i class="fa-solid fa-exclamation"></i> -->
+                        <label>Priority</label>
+                    </div>
+                    <div class="form-input">
+                        <div class="form-input-radio">
+                            <input type="radio" id="low" name="priority" value="low" checked />
+                            <label for="low" class="priority-low">Low</label>
+                        </div>
+                        <div class="form-input-radio">
+                            <input type="radio" id="medium" name="priority" value="medium"/>
+                            <label for="medium"
+                            class="priority-medium">Medium</label>
+                        </div>
+                        <div class="form-input-radio">
+                            <input type="radio" id="high" name="priority" value="high"/>
+                            <label for="high" class="priority-high">High</label>
+                        </div>
+                    </div>
+                    <footer>
+                        <button>Cancel</button>
+                        <button>Add</button>
+                    </footer>
                 </form>
             </div>
             <ul class="tasks" id="tasks">

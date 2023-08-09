@@ -95,27 +95,30 @@ body {
         opacity: 0.7;
     }
 }
+%transparent-input {
+    border: none;
+    background-color: inherit;
+    padding: 5px 5px;
+    outline: none;
+    &::placeholder {
+        color: blue;
+        opacity: 1;
+    }
+    &:focus::placeholder {
+        color: gray;
+        opacity: initial;
+    }
+    &:hover {
+        background: none;
+    }
+}
 .nav__form {
     @extend %nav-item;
     align-items: center;
     margin: 20px 0;
 
     input {
-        border: none;
-        background-color: inherit;
-        padding: 5px 5px;
-        outline: none;
-        &::placeholder {
-            color: blue;
-            opacity: 1;
-        }
-        &:focus::placeholder {
-            color: gray;
-            opacity: initial;
-        }
-        &:hover {
-            background: none;
-        }
+        @extend %transparent-input;
     }
     i {
         color: blue;
@@ -131,5 +134,115 @@ input {
 
 .content {
     grid-area: list;
-}
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
 
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        h1 {
+            font-size: 1.7rem;
+        }
+    }
+}
+.header__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.task-form {
+    border: 1px solid red;
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0 0;
+            padding: 10px;
+            background-color: rgba($color: gray, $alpha: 0.3);
+            button {
+                background: none;
+                border: none;
+                padding: 5px 10px;
+                &:hover {
+                    background-color: gray;
+                    color: white;
+                }
+            }
+        }
+    }
+
+    // input[type="date"]::-webkit-inner-spin-button,
+    // input[type="date"] {
+    //     position: relative;
+    // }
+    input {
+        @extend %transparent-input;
+        width: 100%;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        opacity: 0;
+    }
+
+    input[type="radio"] {
+        width: auto;
+        position: fixed;
+        opacity: 0;
+        pointer-events: none;
+        &:checked + label{
+            &.priority-low{
+                background-color: rgba($color: blue, $alpha: 0.3);
+            }
+            &.priority-medium{
+                background-color: rgba($color: yellow, $alpha: 0.3);
+            }
+            &.priority-high{
+                background-color: rgba($color: red, $alpha: 0.3);
+            }
+            
+        }
+    }
+
+    i {
+        min-width: 20px;
+        color: blue;
+        text-align: center;
+    }
+    label {
+        padding: 5px;
+    }
+}
+.form-input {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    
+    margin: 0 10px;
+
+    &-radio {
+        label {
+            padding: 3px 12px;
+            border: 1px solid black;
+            border-radius: 15px;
+            cursor: pointer;
+            &.priority-low {
+                border-color: blue;
+            }
+            &.priority-medium {
+                border-color: yellow;
+            }
+            &.priority-high {
+                border-color: red;
+            }
+        }
+    }
+}
