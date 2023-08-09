@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Edu+SA+Beginner:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;500;700&display=swap');
 
 * {
     box-sizing: border-box;
@@ -7,10 +7,10 @@
 }
 
 body {
-    font-family: 'Edu SA Beginner', cursive;
+    font-family: 'Nunito', sans-serif;
     min-height: 100vh;
     display: flex;
-    font-size: 1.1rem;
+    // font-size: 1.1rem;
 }
 
 #app {
@@ -145,7 +145,7 @@ input {
         align-items: center;
         gap: 20px;
         h1 {
-            font-size: 1.7rem;
+            font-size: 1.5rem;
         }
     }
 }
@@ -194,9 +194,9 @@ input {
     }
 
     // input[type="date"]::-webkit-inner-spin-button,
-    // input[type="date"] {
-    //     position: relative;
-    // }
+    input[type="date"] {
+        font: inherit;
+    }
     input {
         @extend %transparent-input;
         width: 100%;
@@ -296,8 +296,8 @@ input {
 
         &::before {
             content: '';
-            width: 0.65em;
-            height: 0.65em;
+            width: 0.5em;
+            height: 0.5em;
             transform: scale(0);
             transition: 120ms transform ease-in-out;
             box-shadow: inset 1em 1em blue;
