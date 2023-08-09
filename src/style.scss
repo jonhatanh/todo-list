@@ -154,18 +154,31 @@ input {
     align-items: center;
     gap: 10px;
 }
+.header__options {
+    button {
+        padding: 5px 10px;
+        background: none;
+        border: none;
+        border-radius: 10px;
+        &:hover {
+            background-color: rgba($color: blue, $alpha: 0.5);
+        }
+    }
+}
 .task-form {
-    border: 1px solid red;
-
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba($color: #000000, $alpha: 0.3);
+    overflow: hidden;
     form {
         display: flex;
         flex-direction: column;
         gap: 5px;
+        margin-top: 10px;
 
         footer {
             display: flex;
             justify-content: space-between;
-            margin: 10px 0 0;
+            margin: 15px 0 0;
             padding: 10px;
             background-color: rgba($color: gray, $alpha: 0.3);
             button {
@@ -245,4 +258,66 @@ input {
             }
         }
     }
+}
+
+.tasks {
+    display: grid;
+    gap: 15px;
+
+
+}
+
+.task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba($color: #000000, $alpha: 0.3);
+
+    &__name {
+        flex: 1;
+    }
+
+    input[type="checkbox"] {
+        appearance: none;
+        background-color: inherit;
+        margin: 0;
+        font: inherit;
+        color: currentColor;
+        border: 1px solid black;
+        border-radius: 50%;
+        cursor: pointer;
+        width: 1em;
+        height: 1em;
+        display: grid;
+        place-content: center;
+
+        &::before {
+            content: '';
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em blue;
+            border-radius: 50%;
+        }
+        &:checked::before {
+            transform: scale(1);
+        }
+    }
+
+    &__options {
+        button {
+            padding: 7px;
+            background: none;
+            border: none;
+            border-radius: 50%;
+            &:hover {
+                background-color: rgba($color: #000000, $alpha: 0.3);
+            }
+        }
+    }
+
 }
