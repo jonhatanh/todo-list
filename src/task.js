@@ -11,8 +11,11 @@ export class Task {
         this.#id = this.#uniqueID();
     }
 
-    completeTask() {
+    markAsDone() {
         this.done = true;
+    }
+    markAsUndone() {
+        this.done = false;
     }
 
     get id() {

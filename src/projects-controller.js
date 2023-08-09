@@ -20,5 +20,9 @@ export class ProjectsController {
         // this.#projects = Array.from(list);
     }
 
+    getCurrentProjectTasks() {
+        return this.#currentProject?.getTasks() ?? this.#generalTasks.getTasks();
+    }
+
     
 }

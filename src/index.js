@@ -7,7 +7,7 @@ import { tasksList } from "./ui-controllers";
 
 
 const projectsController = new ProjectsController();
-tasksList.init();
+tasksList.init(projectsController.getCurrentProjectTasks());
 taskForm.init();
 
 

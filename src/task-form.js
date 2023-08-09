@@ -22,6 +22,7 @@ export const taskForm = (function () {
         );
         console.log("TASK-FORM: task form submitted", task);
         pubsub.publish('taskFormSubmitted', task);
+        e.target.reset();
     }
 
     return {

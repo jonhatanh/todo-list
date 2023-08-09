@@ -14,5 +14,9 @@ export class Project {
         pubsub.publish('taskAdded', this.#tasks);
     }
 
+    getTasks() {
+        return this.#tasks;
+    }
+
 
 }

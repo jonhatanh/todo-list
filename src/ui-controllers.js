@@ -5,8 +5,9 @@ import {create, addClass, addChilds} from './dom-helper'
 export const tasksList = (function () {
     const tasksContainer = document.getElementById('tasks');
     
-    function init() {
+    function init(tasks) {
         pubsub.subscribe('taskAdded', renderTasks);
+        renderTasks(tasks);
         tasksContainer.addEventListener('click', e => {
             console.log(e.target);
             console.log(e.target.closest('.task').id);
