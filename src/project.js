@@ -12,6 +12,10 @@ export class Project {
         this.#tasks.push(task);
         console.log(`TASK: ${task.title} added to ${this.name}`);
         pubsub.publish('taskAdded', this.#tasks);
+        pubsub.publish('projectTaskUpdated', {
+            "project": this,
+            "task": task
+        });
     }
 
     getTasks() {

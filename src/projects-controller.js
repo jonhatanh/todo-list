@@ -8,8 +8,10 @@ export class ProjectsController {
     #generalTasks = new Project('Tasks');
 
     constructor() {
-        console.log(this);
         pubsub.subscribe('taskFormSubmitted', this.taskAdded.bind(this));
+        if (localStorage.getItem('projects') !== null) {
+            this.#loadProjects();
+        }
     }
 
     taskAdded(task) {
@@ -24,5 +26,38 @@ export class ProjectsController {
         return this.#currentProject?.getTasks() ?? this.#generalTasks.getTasks();
     }
 
-    
+    #loadProjects() {
+        const projects = JSON.parse(localStorage.getItem('projects'));
+        for (const project in projects) {
+            const projectTasks = projects[project];
+            if (project === 'Tasks') {
+                projectTasks.forEach(task =>
+                        this.#generalTasks.addTask(new Task(
+                            task.title,
+                            task.description,
+                            task.date,
+                            task.priority,
+                            task.done,
+                            task.id
+                        ))
+                );
+                continue;
+            }
+
+            const newProject = new Project(project);
+            projectTasks.forEach(task =>
+                newProject.addTask(new Task(
+                    task.title,
+                    task.description,
+                    task.date,
+                    task.priority,
+                    task.done,
+                    task.id
+                ))
+            );
+            this.#projects.push(newProject);
+        }
+    }
+
+
 }
