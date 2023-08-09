@@ -28,14 +28,15 @@ body {
     gap: 25px;
     background-color: aqua;
 
-    padding: 10px 15px;
+    padding: 10px 0;
 
 }
 
-.nav__user-profile {
+.nav__user-profile, .nav__title {
     display: flex;
     align-items: center;
     gap: 5px;
+    padding: 0 15px;
 
     img {
         max-width: 28px;
@@ -60,16 +61,72 @@ body {
 .nav__items__projects {
     padding-top: 20px;
 }
-.nav__item {
+
+%nav-item {
+    display: flex;
     text-decoration: none;
     color: inherit;
-    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    position: relative;
+    height: 35px;
+
+    &:hover {
+        background-color: rgba($color: gray, $alpha: 0.3);
+    }
+}
+.nav__item {
+    @extend %nav-item;
     justify-content: space-between;
+    
+
+    &--selected::before {
+        content: '';
+        position: absolute;
+        background-color: blue;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+    }
 
     
-    .nav__item__qty {
+    &__qty {
         opacity: 0.7;
     }
+}
+.nav__form {
+    @extend %nav-item;
+    align-items: center;
+    margin: 20px 0;
+
+    input {
+        border: none;
+        background-color: inherit;
+        padding: 5px 5px;
+        outline: none;
+        &::placeholder {
+            color: blue;
+            opacity: 1;
+        }
+        &:focus::placeholder {
+            color: gray;
+            opacity: initial;
+        }
+        &:hover {
+            background: none;
+        }
+    }
+    i {
+        color: blue;
+    }
+
+}
+input {
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+    font-family: inherit;
 }
 
 .content {

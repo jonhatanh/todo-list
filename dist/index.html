@@ -20,7 +20,7 @@
             </div>
             <div class="nav__items">
                 <div class="nav__items__views">
-                    <a href="#" class="nav__item">
+                    <a href="#" class="nav__item  nav__item--selected">
                         <div class="nav__item__title">
                             <i class="fa-solid fa-list-check"></i>
                             Today
@@ -70,10 +70,45 @@
                         </div>
                     </a>
                 </div>
+                <div class="nav__form">
+                    <i class="fa-solid fa-plus"></i>
+                    <input type="text" id="newProjectInput" placeholder="New project">
+                </div>
             </div>
         </nav>
         <main class="content">
-            Todo LISTS
+            <header>
+                <h1>
+                    Random tasks
+                </h1>
+                <div class="header__options">
+                    <button>Filter</button>
+                </div>
+            </header>
+            <div class="task-form">
+                <form id="task-form">
+                    <input type="text" name="title" id="title" placeholder="Add task">
+                </form>
+            </div>
+            <ul class="tasks" id="tasks">
+               <div class="task">
+                <input type="checkbox"  name="task-1" id="task-1">
+                <span class="task__name">Finish todo list</span>
+                <div class="task__options">
+                    <button title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                </div>
+               </div> 
+               <div class="task">
+                <input type="checkbox"  name="task-2" id="task-2">
+                <span class="task__name">Finish nav bar</span>
+                <div class="task__options">
+                    <button title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                </div>
+               </div> 
+            </ul>
+
         </main>
     </div>
     <script src="main.js"></script>
