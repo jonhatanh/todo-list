@@ -1,12 +1,36 @@
 import { pubsub } from "./pubsub";
-import {create, addClass, addChilds} from './dom-helper'
+import {create, addClass, addChilds} from './dom-helper';
+import {Project} from './project';
 // import { Task } from "./task";
+
+export const pageTitle = (function () {
+    const titleContainer = document.querySelector('header .header__title');
+
+    function init() {
+        pubsub.subscribe('loadNewPage', changeTitle);
+        // changeTitle();
+    }
+
+    function changeTitle(project) {
+        titleContainer.textContent = '';
+        const i = addClass(create('i'), 'fa-solid', 'fa-list-check');
+        const h1 = create('h1');
+        h1.textContent = project.name;
+        addChilds(titleContainer, i, h1);
+    }
+
+    return {
+        init,
+    }
+
+})();
 
 export const tasksList = (function () {
     const tasksContainer = document.getElementById('tasks');
     
     function init(tasks) {
         pubsub.subscribe('taskAdded', renderTasks);
+        pubsub.subscribe('loadNewPage', renderProjectTasks);
         renderTasks(tasks);
         tasksContainer.addEventListener('click', e => {
             console.log(e.target);
@@ -20,6 +44,14 @@ export const tasksList = (function () {
         tasks.forEach(task => {
             tasksContainer.appendChild(createTaskElement(task));
         })
+    }
+
+    function renderProjectTasks(project) {
+        if(project instanceof Project) {
+            renderTasks(project.getTasks());
+            return;
+        }
+        
     }
 
 
@@ -57,10 +89,10 @@ export const projectsList = (function () {
         pubsub.subscribe('projectAdded', renderProjects);
         renderProjects(projects);
         
-        projectContainer.addEventListener('click', e => {
-            console.log(e.target);
-            console.log(e.target.closest('.nav__item').id);
-        });
+        // projectContainer.addEventListener('click', e => {
+        //     console.log(e.target);
+        //     console.log(e.target.closest('.nav__item').id);
+        // });
     }
 
     function renderProjects(projects) {
@@ -71,6 +103,7 @@ export const projectsList = (function () {
         })
     }
 
+    
 
     function createProjectElement(project) {
         const div = addClass(create('a'), 'nav__item');
@@ -89,6 +122,24 @@ export const projectsList = (function () {
     return {
         init,
 
+    };
+})();
+
+export const navController = (function () {
+    const navContainer = document.getElementById('nav-items');
+    
+    function init() {
+        
+        navContainer.addEventListener('click', changeCurrentPage);
+    }
+
+    function changeCurrentPage(e) {
+        const newPage = e.target.closest('.nav__item')?.id;
+        pubsub.publish('changePage', newPage);
+    }
+
+    return {
+        init,
     };
 })();
 

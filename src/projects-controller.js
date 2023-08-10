@@ -10,6 +10,7 @@ export class ProjectsController {
     constructor() {
         pubsub.subscribe('taskFormSubmitted', this.taskAdded.bind(this));
         pubsub.subscribe('projectFormSubmitted', this.projectAdded.bind(this));
+        pubsub.subscribe('changePage', this.#changeCurrentProject.bind(this));
         if (localStorage.getItem('projects') !== null) {
             this.#loadProjects();
         }
@@ -38,6 +39,16 @@ export class ProjectsController {
 
     getCurrentProjectTasks() {
         return this.#currentProject?.getTasks() ?? this.#generalTasks.getTasks();
+    }
+
+    #changeCurrentProject(projectName) {
+        if(projectName === 'Tasks') {
+            pubsub.publish('loadNewPage', this.#generalTasks);
+        }
+        const newCurrentProject = this.#projects.find(project => project.name === projectName);
+        if(newCurrentProject === undefined) return;
+        this.#currentProject = newCurrentProject;
+        pubsub.publish('loadNewPage', newCurrentProject);
     }
 
     #isDuplicateProject(project) {
