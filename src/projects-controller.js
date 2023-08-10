@@ -76,6 +76,7 @@ export class ProjectsController {
             );
             this.#projects.push(newProject);
         }
+        pubsub.publish('projectAdded', this.#projects);
     }
 
 

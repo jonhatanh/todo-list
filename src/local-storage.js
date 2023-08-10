@@ -9,10 +9,11 @@ export class LocalSaves {
         if (localStorage.getItem('projects') === null) {
             localStorage.setItem('projects', JSON.stringify({}));
         }
-        pubsub.subscribe('projectTaskUpdated', this.saveProject.bind(this));
+        pubsub.subscribe('projectTaskUpdated', this.saveProjectTask.bind(this));
+        pubsub.subscribe('projectAdded', this.saveProject.bind(this));
     }
 
-    saveProject({project, task}) {
+    saveProjectTask({project, task}) {
         const projects = JSON.parse(localStorage.getItem('projects'));
         const newTask = {
             "title": task.title,
@@ -41,8 +42,18 @@ export class LocalSaves {
         localStorage.setItem('projects', JSON.stringify(projects));
     }
 
+    saveProject(projects) {
+        const projectsLocal = JSON.parse(localStorage.getItem('projects'));
+        projects.forEach(project => {
+            if (projectsLocal[project.name] !== undefined) return;
+            projectsLocal[project.name] = [];
+        })
+        
+        console.log(`LOCAL-STORAGE: I'll save the new project`);
+        localStorage.setItem('projects', JSON.stringify(projectsLocal));
+    }
+
     #getTaskIndex(tasks, id) {
-        console.log(tasks, id);
         return tasks.findIndex(task => task.id === id);
     }
 

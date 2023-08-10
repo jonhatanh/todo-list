@@ -24,8 +24,8 @@ export const tasksList = (function () {
 
 
     function createTaskElement(task) {
-        const div = addClass(create('div'), 'task');
-        div.id = task.id;
+        const li = addClass(create('li'), 'task');
+        li.id = task.id;
         const checkbox = create('input');
         checkbox.type = 'checkbox';
         checkbox.checked = task.done;
@@ -40,8 +40,8 @@ export const tasksList = (function () {
         addChilds(editButton, addClass(create('i'), 'fa-solid', 'fa-pen-to-square'));
         addChilds(deleteButton, addClass(create('i'), 'fa-regular', 'fa-trash-can'));
         addChilds(taskOptions, editButton, deleteButton);
-        addChilds(div, checkbox, span, taskOptions);
-        return div;
+        addChilds(li, checkbox, span, taskOptions);
+        return li;
     }
 
     return {

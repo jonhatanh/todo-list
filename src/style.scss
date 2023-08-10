@@ -91,7 +91,11 @@ body {
         width: 4px;
     }
 
-    
+    &__title {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+    }
     &__qty {
         opacity: 0.7;
     }

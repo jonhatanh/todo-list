@@ -7,9 +7,9 @@ import { LocalSaves } from "./local-storage";
 
 
 const localSaves = new LocalSaves();
+projectsList.init();
 const projectsController = new ProjectsController();
 tasksList.init(projectsController.getCurrentProjectTasks());
-projectsList.init();
 taskForm.init();
 projectForm.init();
 
