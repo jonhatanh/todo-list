@@ -50,3 +50,32 @@ export const tasksList = (function () {
     };
 })();
 
+export const toast = (function () {
+    const toastContainer = document.getElementById('toast');
+    
+    function init() {
+        pubsub.subscribe('showToast', showToast);
+        toastContainer.addEventListener('animationend', hideToast)
+    }
+
+    function hideToast(e) {
+        if(e.animationName === 'progress-bar-modal') {
+            toastContainer.classList.add('close');
+        }
+        if(e.animationName === 'modal-close') {
+            toastContainer.classList.remove('open', 'close');
+        }
+
+    }
+
+    function showToast({icon, message}) {
+        const iconContainer = document.querySelector(".toast .icon i");
+        const messageContainer = document.querySelector(".toast .message");
+        iconContainer.className = icon;
+        messageContainer.textContent = message;
+        toastContainer.classList.add('open');
+    }
+    return {
+        init,
+    };
+})();
