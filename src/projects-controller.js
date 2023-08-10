@@ -2,67 +2,67 @@ import { pubsub } from "./pubsub";
 import { Task } from "./task";
 import { Project } from "./project";
 
-export class ProjectsController {
-    #projects = [];
-    #currentProject = null;
-    #generalTasks = new Project('Tasks');
+export const projectsController = (function() {
+    const projects = [];
+    let currentProject = null;
+    const generalTasks = new Project('Tasks');
 
-    constructor() {
-        pubsub.subscribe('taskFormSubmitted', this.taskAdded.bind(this));
-        pubsub.subscribe('projectFormSubmitted', this.projectAdded.bind(this));
-        pubsub.subscribe('changePage', this.#changeCurrentProject.bind(this));
+    function init() {
+        pubsub.subscribe('taskFormSubmitted', taskAdded);
+        pubsub.subscribe('projectFormSubmitted', projectAdded);
+        pubsub.subscribe('changePage', changeCurrentProject);
         if (localStorage.getItem('projects') !== null) {
-            this.#loadProjects();
+            loadProjects();
         }
     }
 
-    taskAdded(task) {
+    function taskAdded(task) {
         console.log(`PROJECT-CONTROLLER: I hear that ${task.title} was added`);
-        this.#currentProject === null ? this.#generalTasks.addTask(task) : this.#currentProject.addTask(task);
+        currentProject === null ? generalTasks.addTask(task) : currentProject.addTask(task);
         // let list = new Set(this.#projects);
         // list.add(task);
         // this.#projects = Array.from(list);
     }
 
-    projectAdded(project) {
+    function projectAdded(project) {
         console.log(`PROJECT-CONTROLLER: I hear that ${project.name} was added`);
-        if(this.#isDuplicateProject(project)) {
+        if(isDuplicateProject(project)) {
             pubsub.publish("showToast", {
                 icon: 'fa-solid fa-xmark',
                 message: 'This project already exists'
             });
             return
         }
-        this.#projects.push(project);
-        pubsub.publish('projectAdded', this.#projects);
+        projects.push(project);
+        pubsub.publish('projectAdded', projects);
     }
 
-    getCurrentProjectTasks() {
-        return this.#currentProject?.getTasks() ?? this.#generalTasks.getTasks();
+    function getCurrentProjectTasks() {
+        return currentProject?.getTasks() ?? generalTasks.getTasks();
     }
 
-    #changeCurrentProject(projectName) {
+    function changeCurrentProject(projectName) {
         if(projectName === 'Tasks') {
-            pubsub.publish('loadNewPage', this.#generalTasks);
+            pubsub.publish('loadNewPage', generalTasks);
         }
-        const newCurrentProject = this.#projects.find(project => project.name === projectName);
+        const newCurrentProject = projects.find(project => project.name === projectName);
         if(newCurrentProject === undefined) return;
-        this.#currentProject = newCurrentProject;
+        currentProject = newCurrentProject;
         pubsub.publish('loadNewPage', newCurrentProject);
     }
 
-    #isDuplicateProject(project) {
-        const exists = this.#projects.findIndex(el => el.name === project.name);
+    function isDuplicateProject(project) {
+        const exists = projects.findIndex(el => el.name === project.name);
         return exists !== -1; 
     }
 
-    #loadProjects() {
-        const projects = JSON.parse(localStorage.getItem('projects'));
-        for (const project in projects) {
-            const projectTasks = projects[project];
+    function loadProjects() {
+        const projectsLocal = JSON.parse(localStorage.getItem('projects'));
+        for (const project in projectsLocal) {
+            const projectTasks = projectsLocal[project];
             if (project === 'Tasks') {
                 projectTasks.forEach(task =>
-                        this.#generalTasks.addTask(new Task(
+                        generalTasks.addTask(new Task(
                             task.title,
                             task.description,
                             task.date,
@@ -85,10 +85,14 @@ export class ProjectsController {
                     task.id
                 ))
             );
-            this.#projects.push(newProject);
+            projects.push(newProject);
         }
-        pubsub.publish('projectAdded', this.#projects);
+        pubsub.publish('projectAdded', projects);
     }
 
+    return {
+        init,
+        getCurrentProjectTasks,
+    }
 
-}
+})();
