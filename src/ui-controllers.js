@@ -47,11 +47,11 @@ export const tasksList = (function () {
     }
 
     function renderProjectTasks(project) {
-        if(project instanceof Project) {
-            renderTasks(project.getTasks());
-            return;
-        }
-        
+        const tasks = project instanceof Project 
+            ? project.getTasks()
+            : project.tasks;
+        renderTasks(tasks);
+
     }
 
 

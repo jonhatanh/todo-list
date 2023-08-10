@@ -42,14 +42,31 @@ export const projectsController = (function() {
     }
 
     function changeCurrentProject(projectName) {
-        if(projectName === 'Tasks') {
-            pubsub.publish('loadNewPage', generalTasks);
-        }
+        
         const newCurrentProject = projects.find(project => project.name === projectName);
-        if(newCurrentProject === undefined) return;
+        if(newCurrentProject === undefined) {
+            checkDefaultProjects(projectName);
+            return;
+        }
         currentProject = newCurrentProject;
         pubsub.publish('loadNewPage', newCurrentProject);
     }
+
+    function checkDefaultProjects(projectName) {
+        if(projectName === 'Tasks') {
+            currentProject = null;
+            pubsub.publish('loadNewPage', generalTasks);
+        }
+        if(projectName === 'Today') {
+            currentProject = null;
+            pubsub.publish('loadNewPage', {
+                "name": "Today",
+                "tasks": generalTasks.getTodayTasks()
+            });
+        }
+    }
+
+    // function getTasks
 
     function isDuplicateProject(project) {
         const exists = projects.findIndex(el => el.name === project.name);
