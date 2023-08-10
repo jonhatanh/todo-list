@@ -50,7 +50,7 @@ export const projectForm = (function () {
             })
             return;
         }
-
+        input.value = "";
         pubsub.publish("projectFormSubmitted", new Project(projectName));
     }
 

@@ -22,5 +22,8 @@ export class Project {
         return this.#tasks;
     }
 
+    getNumOfTasks() {
+        return this.#tasks.length;
+    }
 
 }

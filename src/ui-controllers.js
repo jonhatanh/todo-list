@@ -50,6 +50,48 @@ export const tasksList = (function () {
     };
 })();
 
+export const projectsList = (function () {
+    const projectContainer = document.getElementById('projects');
+    
+    function init(projects) {
+        pubsub.subscribe('projectAdded', renderProjects);
+        renderProjects(projects);
+        
+        projectContainer.addEventListener('click', e => {
+            console.log(e.target);
+            console.log(e.target.closest('.nav__item').id);
+        });
+    }
+
+    function renderProjects(projects) {
+        projectContainer.textContent = '';
+        console.log('PROJECT-LIST: RENDERING');
+        projects?.forEach(project => {
+            projectContainer.appendChild(createProjectElement(project));
+        })
+    }
+
+
+    function createProjectElement(project) {
+        const div = addClass(create('a'), 'nav__item');
+        div.id = project.name;
+        const titleContainer = addClass(create('div'), 'nav__item__title');
+        const icon = addClass(create('i'), 'fa-solid', 'fa-list-check');
+        const qtyContainer = addClass(create('div'), 'nav__item__qty');
+        qtyContainer.textContent = project.getNumOfTasks();
+
+        addChilds(titleContainer, icon, document.createTextNode(project.name));
+        addChilds(div, titleContainer, qtyContainer);
+
+        return div;
+    }
+
+    return {
+        init,
+
+    };
+})();
+
 export const toast = (function () {
     const toastContainer = document.getElementById('toast');
     
@@ -65,7 +107,6 @@ export const toast = (function () {
         if(e.animationName === 'modal-close') {
             toastContainer.classList.remove('open', 'close');
         }
-
     }
 
     function showToast({icon, message}) {

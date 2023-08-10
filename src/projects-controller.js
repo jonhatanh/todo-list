@@ -9,6 +9,7 @@ export class ProjectsController {
 
     constructor() {
         pubsub.subscribe('taskFormSubmitted', this.taskAdded.bind(this));
+        pubsub.subscribe('projectFormSubmitted', this.projectAdded.bind(this));
         if (localStorage.getItem('projects') !== null) {
             this.#loadProjects();
         }
@@ -22,8 +23,26 @@ export class ProjectsController {
         // this.#projects = Array.from(list);
     }
 
+    projectAdded(project) {
+        console.log(`PROJECT-CONTROLLER: I hear that ${project.name} was added`);
+        if(this.#isDuplicateProject(project)) {
+            pubsub.publish("showToast", {
+                icon: 'fa-solid fa-xmark',
+                message: 'This project already exists'
+            });
+            return
+        }
+        this.#projects.push(project);
+        pubsub.publish('projectAdded', this.#projects);
+    }
+
     getCurrentProjectTasks() {
         return this.#currentProject?.getTasks() ?? this.#generalTasks.getTasks();
+    }
+
+    #isDuplicateProject(project) {
+        const exists = this.#projects.findIndex(el => el.name === project.name);
+        return exists !== -1; 
     }
 
     #loadProjects() {
