@@ -32,10 +32,7 @@ export const tasksList = (function () {
         pubsub.subscribe('taskAdded', renderTasks);
         pubsub.subscribe('loadNewPage', renderProjectTasks);
         renderTasks(tasks);
-        tasksContainer.addEventListener('click', e => {
-            console.log(e.target);
-            console.log(e.target.closest('.task').id);
-        });
+        tasksContainer.addEventListener('click', makeAction);
     }
 
     function renderTasks(tasks) {
@@ -51,7 +48,18 @@ export const tasksList = (function () {
             ? project.getTasks()
             : project.tasks;
         renderTasks(tasks);
+    }
 
+    function makeAction(e) {
+        if(e.target.dataset.action === undefined) return;
+        const action = e.target.dataset.action;
+        const taskId = e.target.closest('.task').id;
+        
+
+        if(action === 'task-edit') {
+            pubsub.publish('loadEditModal', taskId);
+        }
+        
     }
 
 
@@ -61,13 +69,17 @@ export const tasksList = (function () {
         const checkbox = create('input');
         checkbox.type = 'checkbox';
         checkbox.checked = task.done;
+        checkbox.dataset.action="task-check";
         const span = addClass(create('span'), 'task__name');
         span.textContent = task.title;
+        span.dataset.action="task-details";
         const taskOptions = addClass(create('div'), 'task__options');
         const editButton = create('button');
         editButton.title = 'Edit';
+        editButton.dataset.action="task-edit";
         const deleteButton = create('button');
         deleteButton.title = 'Delete';
+        deleteButton.dataset.action="task-delete";
         
         addChilds(editButton, addClass(create('i'), 'fa-solid', 'fa-pen-to-square'));
         addChilds(deleteButton, addClass(create('i'), 'fa-regular', 'fa-trash-can'));
@@ -177,10 +189,10 @@ export const toast = (function () {
     }
 
     function hideToast(e) {
-        if(e.animationName === 'progress-bar-modal') {
+        if(e.animationName === 'progress-bar-toast') {
             toastContainer.classList.add('close');
         }
-        if(e.animationName === 'modal-close') {
+        if(e.animationName === 'toast-close') {
             toastContainer.classList.remove('open', 'close');
         }
     }
@@ -191,6 +203,63 @@ export const toast = (function () {
         iconContainer.className = icon;
         messageContainer.textContent = message;
         toastContainer.classList.add('open');
+    }
+    return {
+        init,
+    };
+})();
+
+export const modal = (function () {
+    const modalContainer = document.getElementById('modal');
+    const formContainer = document.querySelector('#modal form');
+    const modalCancelButton = document.getElementById('modal-cancel');
+    const modalConfirmButton = document.getElementById('modal-confirm');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDescription = document.getElementById('modal-description');
+    const modalDate = document.getElementById('modal-date');
+    const modalLow = document.getElementById('modal-low');
+    const modalMedium = document.getElementById('modal-medium');
+    const modalHigh = document.getElementById('modal-high');
+    
+    function init() {
+        pubsub.subscribe('openEditModal', openEditModal);
+        modalCancelButton.addEventListener('click', hideModal)
+        modalContainer.addEventListener('animationend', removeModalClasses);
+    }
+
+    function hideModal(e) {
+        modalContainer.classList.add('hidde');
+        formContainer.classList.add('hidde');
+    }
+    function removeModalClasses(e) {
+        if(e.animationName === 'close-modal') {
+            modalContainer.classList.remove('hidde');
+            modalContainer.classList.remove('show');
+        }
+        if(e.animationName === 'close-form') {
+            formContainer.classList.remove('hidde');
+            formContainer.classList.remove('show');
+            formContainer.reset();
+        }
+    }
+
+    function openEditModal(task) {
+        addTaskToForm(task);
+        modalContainer.classList.add('show');
+        formContainer.classList.add('show');
+    }
+
+    function addTaskToForm(task) {
+        modalTitle.value = task.title;
+        modalDescription.value = task.description;
+        modalDate.value = task.date;
+        if(task.priority === 'low') {
+            modalLow.checked = true;
+        } else if(task.priority === 'medium') {
+            modalMedium.checked = true;
+        } else {
+            modalHigh.checked = true;
+        }
     }
     return {
         init,

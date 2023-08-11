@@ -34,6 +34,10 @@ export class Project {
         return this.#tasks;
     }
 
+    getTaskById(id) {
+        return this.#tasks.find(task => task.id === id);
+    }
+
     getNumOfTasks() {
         return this.#tasks.length;
     }

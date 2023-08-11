@@ -11,6 +11,7 @@ export const projectsController = (function() {
         pubsub.subscribe('taskFormSubmitted', taskAdded);
         pubsub.subscribe('projectFormSubmitted', projectAdded);
         pubsub.subscribe('changePage', changeCurrentProject);
+        pubsub.subscribe('loadEditModal', loadEditModal);
         if (localStorage.getItem('projects') !== null) {
             loadProjects();
         }
@@ -77,7 +78,16 @@ export const projectsController = (function() {
                 "tasks": generalTasks.getWeekTasks()
             });
         }
+
     }
+
+    function loadEditModal(taskId) {
+        const task = typeof currentProject === 'string'
+            ? generalTasks.getTaskById(taskId)
+            : currentProject.getTaskById(taskId);
+        pubsub.publish('openEditModal', task);
+    }
+
 
     // function getTasks
 
