@@ -151,8 +151,16 @@ export const navController = (function () {
     }
 
     function changeCurrentPage(e) {
-        const newPage = e.target.closest('.nav__item')?.id;
-        pubsub.publish('changePage', newPage);
+        const navItem = e.target.closest('.nav__item');
+        if(navItem) {
+            changeActivePage(navItem);
+            const newPageName = navItem.id;
+            pubsub.publish('changePage', newPageName);
+        }
+    }
+    function changeActivePage(navItem) {
+        document.querySelector('.nav__item--selected').classList.remove('nav__item--selected');
+        navItem.classList.add('nav__item--selected');
     }
 
     return {
