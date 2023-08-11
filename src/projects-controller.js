@@ -9,6 +9,7 @@ export const projectsController = (function() {
 
     function init() {
         pubsub.subscribe('taskFormSubmitted', taskAdded);
+        pubsub.subscribe('taskUpdateSubmitted', taskUpdated);
         pubsub.subscribe('projectFormSubmitted', projectAdded);
         pubsub.subscribe('changePage', changeCurrentProject);
         pubsub.subscribe('loadEditModal', loadEditModal);
@@ -23,6 +24,17 @@ export const projectsController = (function() {
         typeof currentProject === 'string'
          ? generalTasks.addTask(task, currentProject)
          : currentProject.addTask(task);
+        // currentProject === null ? generalTasks.addTask(task) : currentProject.addTask(task);
+        // let list = new Set(this.#projects);
+        // list.add(task);
+        // this.#projects = Array.from(list);
+    }
+
+    function taskUpdated(taskObj) {
+        
+        typeof currentProject === 'string'
+         ? generalTasks.updateTask(taskObj, currentProject)
+         : currentProject.updateTask(taskObj);
         // currentProject === null ? generalTasks.addTask(task) : currentProject.addTask(task);
         // let list = new Set(this.#projects);
         // list.add(task);

@@ -3,10 +3,12 @@ import { pubsub } from "./pubsub";
 import { Task } from "./task";
 
 export const taskForm = (function () {
+    const form = document.getElementById('task-form');
+    const formUpdate = document.getElementById('update-task-form');
 
     function init() {
-        const form = document.getElementById('task-form');
 
+        formUpdate.addEventListener('submit', updateTask);
         form.addEventListener('submit', addTask);
     }
 
@@ -23,6 +25,25 @@ export const taskForm = (function () {
         );
         console.log("TASK-FORM: task form submitted", task);
         pubsub.publish('taskFormSubmitted', task);
+        e.target.reset();
+    }
+    function updateTask(e) {
+        e.preventDefault();
+
+        const data = e.target.elements;
+
+        const task = new Task(
+            data.title.value,
+            data.description.value,
+            data.date.value,
+            data.priority.value
+        );
+        console.log("EDIT-TASK-FORM: task form submitted", task);
+        pubsub.publish('taskUpdateSubmitted', {
+            "taskId": e.target.dataset.id,
+            "taskUpdated": task
+        });
+        pubsub.publish('closeEditModal',e);
         e.target.reset();
     }
 

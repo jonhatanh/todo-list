@@ -32,6 +32,7 @@ export class LocalSaves {
             const projectTasks = projects[project.name];
             console.log(this);
             const taskIndex = this.#getTaskIndex(projectTasks, task.id);
+            console.log(taskIndex);
             taskIndex === -1 
                 ? projectTasks.push(newTask)
                 : projectTasks[taskIndex] = newTask;
@@ -54,7 +55,10 @@ export class LocalSaves {
     }
 
     #getTaskIndex(tasks, id) {
-        return tasks.findIndex(task => task.id === id);
+        return tasks.findIndex(task => {
+            console.log('task:',task.id, 'func', id);
+            return task.id === id
+        });
     }
 
     

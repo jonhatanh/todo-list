@@ -23,6 +23,24 @@ export class Project {
         });
     }
 
+    updateTask({taskId, taskUpdated}, defaultProjectName = null) {
+        const task = this.getTaskById(taskId);
+        task.title = taskUpdated.title;
+        task.description = taskUpdated.description;
+        task.date = taskUpdated.date;
+        task.priority = taskUpdated.priority;
+        if(defaultProjectName) {
+            this.#pubToDefaultProject(defaultProjectName);
+        } else {
+            pubsub.publish('taskAdded', this.#tasks);
+        }
+        
+        pubsub.publish('projectTaskUpdated', {
+            "project": this,
+            "task": task
+        });
+    }
+
     #pubToDefaultProject(name) {
         name === "Tasks" && pubsub.publish('taskAdded', this.#tasks);
         name === "Today" && pubsub.publish('taskAdded', this.getTodayTasks());
@@ -55,7 +73,6 @@ export class Project {
     }
 
     #dateBetweenRange(date, startDate, endDate) {
-        console.log({date, startDate, endDate});
         return (isAfter(date, startDate) && isBefore(date, endDate)) || (isEqual(date, startDate) || isEqual(date, endDate));
     }
 

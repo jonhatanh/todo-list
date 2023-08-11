@@ -211,7 +211,7 @@ export const toast = (function () {
 
 export const modal = (function () {
     const modalContainer = document.getElementById('modal');
-    const formContainer = document.querySelector('#modal form');
+    const formContainer = document.getElementById('update-task-form');
     const modalCancelButton = document.getElementById('modal-cancel');
     const modalConfirmButton = document.getElementById('modal-confirm');
     const modalTitle = document.getElementById('modal-title');
@@ -223,11 +223,12 @@ export const modal = (function () {
     
     function init() {
         pubsub.subscribe('openEditModal', openEditModal);
-        modalCancelButton.addEventListener('click', hideModal)
+        pubsub.subscribe('closeEditModal', hiddeModal);
+        modalCancelButton.addEventListener('click', hiddeModal)
         modalContainer.addEventListener('animationend', removeModalClasses);
     }
 
-    function hideModal(e) {
+    function hiddeModal(e) {
         modalContainer.classList.add('hidde');
         formContainer.classList.add('hidde');
     }
@@ -250,6 +251,7 @@ export const modal = (function () {
     }
 
     function addTaskToForm(task) {
+        formContainer.dataset.id = task.id;
         modalTitle.value = task.title;
         modalDescription.value = task.description;
         modalDate.value = task.date;
