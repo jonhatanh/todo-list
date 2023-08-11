@@ -1,5 +1,5 @@
 import { pubsub } from "./pubsub";
-import { endOfDay, isAfter, isBefore, startOfDay, parse, isEqual } from "date-fns";
+import { endOfDay, isAfter, isBefore, startOfDay, parse, isEqual, addWeeks } from "date-fns";
 
 export class Project {
     #tasks = [];
@@ -8,14 +8,26 @@ export class Project {
         this.name = name;
     }
 
-    addTask(task) {
+    addTask(task, defaultProjectName = null) {
         this.#tasks.push(task);
         console.log(`TASK: ${task.title} added to ${this.name}`);
-        pubsub.publish('taskAdded', this.#tasks);
+        if(defaultProjectName) {
+            this.#pubToDefaultProject(defaultProjectName);
+        } else {
+            pubsub.publish('taskAdded', this.#tasks);
+        }
+        
         pubsub.publish('projectTaskUpdated', {
             "project": this,
             "task": task
         });
+    }
+
+    #pubToDefaultProject(name) {
+        name === "Tasks" && pubsub.publish('taskAdded', this.#tasks);
+        name === "Today" && pubsub.publish('taskAdded', this.getTodayTasks());
+        name === "Week" && pubsub.publish('taskAdded', this.getWeekTasks());
+
     }
 
     getTasks() {
@@ -28,6 +40,9 @@ export class Project {
 
     getTodayTasks() {
         return this.getTasksInRange(startOfDay(new Date()), endOfDay(new Date()));
+    }
+    getWeekTasks() {
+        return this.getTasksInRange(startOfDay(new Date()), addWeeks(startOfDay(new Date()), 1));
     }
 
     getTasksInRange(startDate, endDate) {

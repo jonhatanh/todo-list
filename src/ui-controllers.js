@@ -6,9 +6,9 @@ import {Project} from './project';
 export const pageTitle = (function () {
     const titleContainer = document.querySelector('header .header__title');
 
-    function init() {
+    function init(project) {
         pubsub.subscribe('loadNewPage', changeTitle);
-        // changeTitle();
+        changeTitle(project);
     }
 
     function changeTitle(project) {
@@ -87,6 +87,7 @@ export const projectsList = (function () {
     
     function init(projects) {
         pubsub.subscribe('projectAdded', renderProjects);
+        pubsub.subscribe('projectTaskUpdated', updateTasksCounter);
         renderProjects(projects);
         
         // projectContainer.addEventListener('click', e => {
@@ -103,6 +104,21 @@ export const projectsList = (function () {
         })
     }
 
+    function updateTasksCounter({project}) {
+        const qtyElement = document.querySelector(`.nav__item__qty[data-project="${project.name}"]`);
+        if(!qtyElement) return;
+
+        qtyElement.textContent = project.getNumOfTasks();
+        if (project.name === 'Tasks') updateDefaultProjects(project);
+    }
+
+    function updateDefaultProjects(project) {
+        const qtyTodayElement = document.querySelector('#Today .nav__item__qty');
+        const qtyWeekElement = document.querySelector('#Week .nav__item__qty');
+        qtyTodayElement.textContent = project.getTodayTasks().length;
+        qtyWeekElement.textContent = project.getWeekTasks().length;
+    }
+
     
 
     function createProjectElement(project) {
@@ -111,6 +127,7 @@ export const projectsList = (function () {
         const titleContainer = addClass(create('div'), 'nav__item__title');
         const icon = addClass(create('i'), 'fa-solid', 'fa-list-check');
         const qtyContainer = addClass(create('div'), 'nav__item__qty');
+        qtyContainer.dataset.project = project.name;
         qtyContainer.textContent = project.getNumOfTasks();
 
         addChilds(titleContainer, icon, document.createTextNode(project.name));

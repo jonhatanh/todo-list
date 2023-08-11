@@ -18,7 +18,11 @@ export const projectsController = (function() {
 
     function taskAdded(task) {
         console.log(`PROJECT-CONTROLLER: I hear that ${task.title} was added`);
-        currentProject === null ? generalTasks.addTask(task) : currentProject.addTask(task);
+        console.log(currentProject, typeof currentProject);
+        typeof currentProject === 'string'
+         ? generalTasks.addTask(task, currentProject)
+         : currentProject.addTask(task);
+        // currentProject === null ? generalTasks.addTask(task) : currentProject.addTask(task);
         // let list = new Set(this.#projects);
         // list.add(task);
         // this.#projects = Array.from(list);
@@ -38,7 +42,9 @@ export const projectsController = (function() {
     }
 
     function getCurrentProjectTasks() {
-        return currentProject?.getTasks() ?? generalTasks.getTasks();
+        return typeof currentProject === 'string'
+            ? generalTasks.getTasks()
+            : currentProject.getTasks();
     }
 
     function changeCurrentProject(projectName) {
@@ -54,14 +60,21 @@ export const projectsController = (function() {
 
     function checkDefaultProjects(projectName) {
         if(projectName === 'Tasks') {
-            currentProject = null;
+            currentProject = 'Tasks';
             pubsub.publish('loadNewPage', generalTasks);
         }
         if(projectName === 'Today') {
-            currentProject = null;
+            currentProject = 'Today';
             pubsub.publish('loadNewPage', {
                 "name": "Today",
                 "tasks": generalTasks.getTodayTasks()
+            });
+        }
+        if(projectName === 'Week') {
+            currentProject = 'Week';
+            pubsub.publish('loadNewPage', {
+                "name": "This Week",
+                "tasks": generalTasks.getWeekTasks()
             });
         }
     }
@@ -88,6 +101,7 @@ export const projectsController = (function() {
                             task.id
                         ))
                 );
+                currentProject = 'Tasks';
                 continue;
             }
 

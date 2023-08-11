@@ -7,7 +7,7 @@ import { LocalSaves } from "./local-storage";
 
 
 const localSaves = new LocalSaves();
-pageTitle.init();
+pageTitle.init({name: 'Tasks'});
 projectsList.init();
 projectsController.init();
 tasksList.init(projectsController.getCurrentProjectTasks());
