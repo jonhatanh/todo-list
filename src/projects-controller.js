@@ -13,6 +13,7 @@ export const projectsController = (function() {
         pubsub.subscribe('projectFormSubmitted', projectAdded);
         pubsub.subscribe('changePage', changeCurrentProject);
         pubsub.subscribe('loadEditModal', loadEditModal);
+        pubsub.subscribe('loadDeleteModal', loadDeleteModal);
         if (localStorage.getItem('projects') !== null) {
             loadProjects();
         }
@@ -98,6 +99,12 @@ export const projectsController = (function() {
             ? generalTasks.getTaskById(taskId)
             : currentProject.getTaskById(taskId);
         pubsub.publish('openEditModal', task);
+    }
+    function loadDeleteModal(taskId) {
+        const task = typeof currentProject === 'string'
+            ? generalTasks.getTaskById(taskId)
+            : currentProject.getTaskById(taskId);
+        pubsub.publish('openDeleteModal', task);
     }
 
 

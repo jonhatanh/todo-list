@@ -39,6 +39,10 @@ export class Project {
             "project": this,
             "task": task
         });
+        pubsub.publish('showToast', {
+            'icon': 'fa-solid fa-check',
+            'message': 'Task updated'
+        })
     }
 
     #pubToDefaultProject(name) {

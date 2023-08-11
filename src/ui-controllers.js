@@ -59,6 +59,9 @@ export const tasksList = (function () {
         if(action === 'task-edit') {
             pubsub.publish('loadEditModal', taskId);
         }
+        if(action === 'task-delete') {
+            pubsub.publish('loadDeleteModal', taskId);
+        }
         
     }
 
@@ -263,6 +266,71 @@ export const modal = (function () {
             modalHigh.checked = true;
         }
     }
+    return {
+        init,
+    };
+})();
+
+export const confirmModal = (function () {
+    const modalContainer = document.getElementById('confirmModal');
+    const confirmContent = document.querySelector('.confirm-content');
+    const modalCancelButton = document.getElementById('confirmModal-cancel');
+    const modalConfirmButton = document.getElementById('confirmModal-confirm');
+    const modalText = document.querySelector('.confirm-content p');
+    
+    function init() {
+        pubsub.subscribe('openDeleteModal', openDeleteModal);
+        pubsub.subscribe('closeDeleteModal', hiddeModal);
+        modalCancelButton.addEventListener('click', hiddeModal)
+        modalConfirmButton.addEventListener('click', deleteTask);
+        modalContainer.addEventListener('animationend', removeModalClasses);
+    }
+
+    function hiddeModal(e) {
+        modalContainer.classList.add('hidde');
+        confirmContent.classList.add('hidde');
+    }
+    function removeModalClasses(e) {
+        if(e.animationName === 'close-modal') {
+            modalContainer.classList.remove('hidde');
+            modalContainer.classList.remove('show');
+        }
+        if(e.animationName === 'close-form') {
+            confirmContent.classList.remove('hidde');
+            confirmContent.classList.remove('show');
+            confirmContent.reset();
+        }
+    }
+
+    function openDeleteModal(task) {
+        console.log(task);
+        confirmContent.dataset.id = task.id;
+        modalContainer.classList.add('show');
+        confirmContent.classList.add('show');
+    }
+
+    function deleteTask() {
+        console.log(confirmContent.dataset.id);
+        hiddeModal();
+        pubsub.publish('showToast', {
+            'icon': 'fa-solid fa-check',
+            'message': 'Task deleted'
+        })
+    }
+
+    // function addTaskToForm(task) {
+    //     confirmContent.dataset.id = task.id;
+    //     modalTitle.value = task.title;
+    //     modalDescription.value = task.description;
+    //     modalDate.value = task.date;
+    //     if(task.priority === 'low') {
+    //         modalLow.checked = true;
+    //     } else if(task.priority === 'medium') {
+    //         modalMedium.checked = true;
+    //     } else {
+    //         modalHigh.checked = true;
+    //     }
+    // }
     return {
         init,
     };
