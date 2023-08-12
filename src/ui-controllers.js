@@ -39,6 +39,7 @@ export const tasksList = (function () {
         tasksContainer.textContent = '';
         console.log('TASK-LIST: RENDERING');
         console.log(tasks);
+        //Add filters here
         tasks.forEach(task => {
             tasksContainer.appendChild(createTaskElement(task));
         })
@@ -54,15 +55,26 @@ export const tasksList = (function () {
     function makeAction(e) {
         if(e.target.dataset.action === undefined) return;
         const action = e.target.dataset.action;
+        const taskElement = e.target.closest('.task');
         const taskId = e.target.closest('.task').id;
         
-
+        console.log(action);
         if(action === 'task-edit') {
-            pubsub.publish('loadEditModal', taskId);
+            pubsub.publish('loadEditModal', taskElement.id);
         }
         if(action === 'task-delete') {
-            pubsub.publish('loadDeleteModal', taskId);
+            pubsub.publish('loadDeleteModal', taskElement.id);
         }
+        if(action === 'task-check') {
+            pubsub.publish('toggleTaskDone', {
+                "taskId": taskElement.id,
+                done: e.target.checked,
+            });
+            e.target.checked
+                ? taskElement.classList.add('task--done')
+                : taskElement.classList.remove('task--done');
+        }
+
         
     }
 
@@ -70,6 +82,7 @@ export const tasksList = (function () {
     function createTaskElement(task) {
         const li = addClass(create('li'), 'task');
         li.id = task.id;
+        task.done && li.classList.add('task--done');
         const checkbox = create('input');
         checkbox.type = 'checkbox';
         checkbox.checked = task.done;

@@ -45,6 +45,7 @@ export class Project {
         })
     }
 
+
     deleteTask(taskId, defaultProjectName = null) {
         this.#tasks = this.#tasks.filter(task => task.id !== taskId);
         pubsub.publish('taskDeleted', {

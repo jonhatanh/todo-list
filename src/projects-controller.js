@@ -15,6 +15,7 @@ export const projectsController = (function() {
         pubsub.subscribe('loadEditModal', loadEditModal);
         pubsub.subscribe('loadDeleteModal', loadDeleteModal);
         pubsub.subscribe('deleteTask', deleteTask);
+        pubsub.subscribe('toggleTaskDone', toggleTaskDone);
         if (localStorage.getItem('projects') !== null) {
             loadProjects();
         }
@@ -60,6 +61,18 @@ export const projectsController = (function() {
         typeof currentProject === 'string'
          ? generalTasks.deleteTask(taskId, currentProject)
          : currentProject.deleteTask(taskId)
+    }
+
+    function toggleTaskDone({taskId, done}) {
+        const project = typeof currentProject === 'string'
+            ? generalTasks
+            : currentProject;
+        const task = project.getTaskById(taskId);
+        task.done = done;
+        pubsub.publish('projectTaskUpdated', {
+            "project": project,
+            "task": task
+        });
     }
 
     function getCurrentProjectTasks() {
