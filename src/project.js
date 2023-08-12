@@ -45,6 +45,19 @@ export class Project {
         })
     }
 
+    deleteTask(taskId, defaultProjectName = null) {
+        this.#tasks = this.#tasks.filter(task => task.id !== taskId);
+        pubsub.publish('taskDeleted', {
+            project: this,
+            taskId: taskId
+        });
+        if(defaultProjectName) {
+            this.#pubToDefaultProject(defaultProjectName);
+        } else {
+            pubsub.publish('taskAdded', this.#tasks);
+        }
+    }
+
     #pubToDefaultProject(name) {
         name === "Tasks" && pubsub.publish('taskAdded', this.#tasks);
         name === "Today" && pubsub.publish('taskAdded', this.getTodayTasks());

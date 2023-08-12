@@ -38,6 +38,7 @@ export const tasksList = (function () {
     function renderTasks(tasks) {
         tasksContainer.textContent = '';
         console.log('TASK-LIST: RENDERING');
+        console.log(tasks);
         tasks.forEach(task => {
             tasksContainer.appendChild(createTaskElement(task));
         })
@@ -102,6 +103,7 @@ export const projectsList = (function () {
     
     function init(projects) {
         pubsub.subscribe('projectAdded', renderProjects);
+        pubsub.subscribe('taskDeleted', updateTasksCounter);
         pubsub.subscribe('projectTaskUpdated', updateTasksCounter);
         renderProjects(projects);
         
@@ -277,12 +279,13 @@ export const confirmModal = (function () {
     const modalCancelButton = document.getElementById('confirmModal-cancel');
     const modalConfirmButton = document.getElementById('confirmModal-confirm');
     const modalText = document.querySelector('.confirm-content p');
+    const modalTitle = document.querySelector('.confirm-content h5');
     
     function init() {
         pubsub.subscribe('openDeleteModal', openDeleteModal);
         pubsub.subscribe('closeDeleteModal', hiddeModal);
         modalCancelButton.addEventListener('click', hiddeModal)
-        modalConfirmButton.addEventListener('click', deleteTask);
+        modalConfirmButton.addEventListener('click', confirmAction);
         modalContainer.addEventListener('animationend', removeModalClasses);
     }
 
@@ -298,24 +301,29 @@ export const confirmModal = (function () {
         if(e.animationName === 'close-form') {
             confirmContent.classList.remove('hidde');
             confirmContent.classList.remove('show');
-            confirmContent.reset();
         }
     }
 
     function openDeleteModal(task) {
-        console.log(task);
+        modalTitle.textContent = 'Are you sure?';
+        modalText.innerHTML = `The task <b>${task.title}</b> will be gone forever.`
         confirmContent.dataset.id = task.id;
+        confirmContent.dataset.action = "delete-task";
         modalContainer.classList.add('show');
         confirmContent.classList.add('show');
     }
 
-    function deleteTask() {
-        console.log(confirmContent.dataset.id);
+    function confirmAction() {
+        if(confirmContent.dataset.action === 'delete-task') {
+            console.log(confirmContent.dataset.id);
+            pubsub.publish('deleteTask', confirmContent.dataset.id);
+            pubsub.publish('showToast', {
+                'icon': 'fa-solid fa-check',
+                'message': 'Task deleted'
+            })
+        }
+
         hiddeModal();
-        pubsub.publish('showToast', {
-            'icon': 'fa-solid fa-check',
-            'message': 'Task deleted'
-        })
     }
 
     // function addTaskToForm(task) {

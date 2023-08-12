@@ -134,7 +134,7 @@ body {
     }
 
 }
-input {
+input, button {
     font-size: inherit;
     font-weight: inherit;
     color: inherit;
@@ -324,6 +324,8 @@ input {
     &__options {
         button {
             padding: 7px;
+            width: 30px;
+            height: 30px;
             background: none;
             border: none;
             border-radius: 50%;
