@@ -12,8 +12,9 @@ export const projectsController = (function() {
         pubsub.subscribe('taskUpdateSubmitted', taskUpdated);
         pubsub.subscribe('projectFormSubmitted', projectAdded);
         pubsub.subscribe('changePage', changeCurrentProject);
-        pubsub.subscribe('loadEditModal', loadEditModal);
-        pubsub.subscribe('loadDeleteModal', loadDeleteModal);
+        // pubsub.subscribe('loadEditModal', loadEditModal);
+        // pubsub.subscribe('loadDeleteModal', loadDeleteModal);
+        pubsub.subscribe('loadModal', loadModal);
         pubsub.subscribe('deleteTask', deleteTask);
         pubsub.subscribe('toggleTaskDone', toggleTaskDone);
         if (localStorage.getItem('projects') !== null) {
@@ -63,12 +64,12 @@ export const projectsController = (function() {
          : currentProject.deleteTask(taskId)
     }
 
-    function toggleTaskDone({taskId, done}) {
+    function toggleTaskDone(taskId) {
         const project = typeof currentProject === 'string'
             ? generalTasks
             : currentProject;
         const task = project.getTaskById(taskId);
-        task.done = done;
+        task.toggleDone();
         pubsub.publish('projectTaskUpdated', {
             "project": project,
             "task": task
@@ -114,17 +115,24 @@ export const projectsController = (function() {
 
     }
 
-    function loadEditModal(taskId) {
+    // function loadEditModal(taskId) {
+    //     const task = typeof currentProject === 'string'
+    //         ? generalTasks.getTaskById(taskId)
+    //         : currentProject.getTaskById(taskId);
+    //     pubsub.publish('openEditModal', task);
+    // }
+    // function loadDeleteModal(taskId) {
+    //     const task = typeof currentProject === 'string'
+    //         ? generalTasks.getTaskById(taskId)
+    //         : currentProject.getTaskById(taskId);
+    //     pubsub.publish('openDeleteModal', task);
+    // }
+
+    function loadModal({taskId, modal}) {
         const task = typeof currentProject === 'string'
             ? generalTasks.getTaskById(taskId)
             : currentProject.getTaskById(taskId);
-        pubsub.publish('openEditModal', task);
-    }
-    function loadDeleteModal(taskId) {
-        const task = typeof currentProject === 'string'
-            ? generalTasks.getTaskById(taskId)
-            : currentProject.getTaskById(taskId);
-        pubsub.publish('openDeleteModal', task);
+        pubsub.publish(`open${modal}`, task);
     }
 
 

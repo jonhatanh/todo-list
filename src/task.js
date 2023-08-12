@@ -12,12 +12,15 @@ export class Task {
         this.#id = id;
     }
 
+    toggleDone() {
+        this.#done = !this.#done;
+    }
     get done() {
         return this.#done;
     }
-    set done(value) {
-        this.#done = value;
-    }
+    // set done(value) {
+    //     this.#done = value;
+    // }
 
     get id() {
         return this.#id;

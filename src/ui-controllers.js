@@ -31,6 +31,7 @@ export const tasksList = (function () {
     function init(tasks) {
         pubsub.subscribe('taskAdded', renderTasks);
         pubsub.subscribe('loadNewPage', renderProjectTasks);
+        pubsub.subscribe('toggleTaskUI', toggleTask);
         renderTasks(tasks);
         tasksContainer.addEventListener('click', makeAction);
     }
@@ -52,6 +53,16 @@ export const tasksList = (function () {
         renderTasks(tasks);
     }
 
+    function toggleTask(taskId) {
+        const taskContainer = tasksContainer.querySelector(`#${taskId}`);
+        if (!taskContainer) return;
+        const checkBox = taskContainer.firstChild;
+        taskContainer.classList.contains('task--done')
+            ? taskContainer.classList.remove('task--done')
+            : taskContainer.classList.add('task--done');
+        checkBox.checked = !checkBox.checked;
+    }
+
     function makeAction(e) {
         if(e.target.dataset.action === undefined) return;
         const action = e.target.dataset.action;
@@ -59,17 +70,17 @@ export const tasksList = (function () {
         const taskId = e.target.closest('.task').id;
         
         console.log(action);
+        if(action === 'task-details') {
+            pubsub.publish('loadModal', {"taskId":taskElement.id, "modal": "DetailsModal"});
+        }
         if(action === 'task-edit') {
-            pubsub.publish('loadEditModal', taskElement.id);
+            pubsub.publish('loadModal', {"taskId":taskElement.id, "modal": "EditModal"});
         }
         if(action === 'task-delete') {
-            pubsub.publish('loadDeleteModal', taskElement.id);
+            pubsub.publish('loadModal', {"taskId":taskElement.id, "modal": "DeleteModal"});
         }
         if(action === 'task-check') {
-            pubsub.publish('toggleTaskDone', {
-                "taskId": taskElement.id,
-                done: e.target.checked,
-            });
+            pubsub.publish('toggleTaskDone', taskElement.id);
             e.target.checked
                 ? taskElement.classList.add('task--done')
                 : taskElement.classList.remove('task--done');
@@ -189,7 +200,7 @@ export const navController = (function () {
         }
     }
     function changeActivePage(navItem) {
-        document.querySelector('.nav__item--selected').classList.remove('nav__item--selected');
+        document.querySelector('.nav__item--selected')?.classList.remove('nav__item--selected');
         navItem.classList.add('nav__item--selected');
     }
 
@@ -296,6 +307,7 @@ export const confirmModal = (function () {
     
     function init() {
         pubsub.subscribe('openDeleteModal', openDeleteModal);
+        pubsub.subscribe('openDetailsModal', openDetailsModal);
         pubsub.subscribe('closeDeleteModal', hiddeModal);
         modalCancelButton.addEventListener('click', hiddeModal)
         modalConfirmButton.addEventListener('click', confirmAction);
@@ -317,11 +329,32 @@ export const confirmModal = (function () {
         }
     }
 
+    function openDetailsModal(task) {
+        modalTitle.textContent = task.title;
+        modalText.innerHTML = `
+        <b>Description:</b> ${task.description ? task.description : '---'}<br>
+        <b>Due date:</b> ${task.date ? task.date : '---'}<br>
+        <b>Priority:</b> ${firstToUpper(task.priority)}<br>
+        `
+        confirmContent.dataset.id = task.id;
+        confirmContent.dataset.action = "details-task";
+        modalCancelButton.textContent = 'Close';
+        modalConfirmButton.textContent = task.done ? 'Unmark' : 'Mark Complete';
+        modalContainer.classList.add('show');
+        confirmContent.classList.add('show');
+    }
+
+    function firstToUpper(str) {
+        return str.charAt(0).toUpperCase().concat(str.slice(1));
+    }
+
     function openDeleteModal(task) {
         modalTitle.textContent = 'Are you sure?';
         modalText.innerHTML = `The task <b>${task.title}</b> will be gone forever.`
         confirmContent.dataset.id = task.id;
         confirmContent.dataset.action = "delete-task";
+        modalCancelButton.textContent = 'Cancel';
+        modalConfirmButton.textContent = 'Delete';
         modalContainer.classList.add('show');
         confirmContent.classList.add('show');
     }
@@ -334,6 +367,11 @@ export const confirmModal = (function () {
                 'icon': 'fa-solid fa-check',
                 'message': 'Task deleted'
             })
+        }
+        if(confirmContent.dataset.action === 'details-task') {
+            console.log(confirmContent.dataset.id);
+            pubsub.publish('toggleTaskDone', confirmContent.dataset.id);
+            pubsub.publish('toggleTaskUI', confirmContent.dataset.id);
         }
 
         hiddeModal();
