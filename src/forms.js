@@ -43,7 +43,7 @@ export const taskForm = (function () {
             "taskId": e.target.dataset.id,
             "taskUpdated": task
         });
-        pubsub.publish('closeEditModal',e);
+        pubsub.publish('closeEditModal', e);
         e.target.reset();
     }
 
@@ -64,7 +64,13 @@ export const projectForm = (function () {
     function addProject(e) {
         if (e.code !== "Enter") return;
         const projectName = input.value.trim();
-        if(projectName === "" || projectName.length > 50) {
+        const elementWithSameId = document.querySelector(`#${projectName}`);
+        if (projectName === "" 
+            || projectName.length > 50
+            || projectName.toLowerCase() === 'tasks' 
+            || projectName.toLowerCase() === 'today'
+            || projectName.toLowerCase() === 'this week' 
+            || elementWithSameId !== null) {
             pubsub.publish("showToast", {
                 icon: "fa-solid fa-xmark",
                 message: "Invalid project name"

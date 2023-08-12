@@ -94,4 +94,7 @@ export class Project {
         return (isAfter(date, startDate) && isBefore(date, endDate)) || (isEqual(date, startDate) || isEqual(date, endDate));
     }
 
+    static isDefaultProject(project) {
+        return project.name === 'Tasks' || project.name === 'Today' || project.name === 'This Week';
+    }
 }

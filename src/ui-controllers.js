@@ -5,18 +5,29 @@ import {Project} from './project';
 
 export const pageTitle = (function () {
     const titleContainer = document.querySelector('header .header__title');
+    const deleteBtn = document.querySelector('header .header__options button');
+    let actualPage;
 
     function init(project) {
         pubsub.subscribe('loadNewPage', changeTitle);
         changeTitle(project);
+        deleteBtn.addEventListener('click', deleteProject);
     }
 
     function changeTitle(project) {
+        actualPage = project.name;
+        Project.isDefaultProject(project) 
+            ? deleteBtn.style.display = 'none'
+            : deleteBtn.style.display = 'block';
         titleContainer.textContent = '';
         const i = addClass(create('i'), 'fa-solid', 'fa-list-check');
         const h1 = create('h1');
         h1.textContent = project.name;
         addChilds(titleContainer, i, h1);
+    }
+
+    function deleteProject(e) {
+        pubsub.publish('openDeleteProjectModal');
     }
 
     return {
@@ -187,7 +198,7 @@ export const navController = (function () {
     const navContainer = document.getElementById('nav-items');
     
     function init() {
-        
+        pubsub.subscribe('changeCurrentPageById', changeCurrentPageById);
         navContainer.addEventListener('click', changeCurrentPage);
     }
 
@@ -202,6 +213,10 @@ export const navController = (function () {
     function changeActivePage(navItem) {
         document.querySelector('.nav__item--selected')?.classList.remove('nav__item--selected');
         navItem.classList.add('nav__item--selected');
+    }
+
+    function changeCurrentPageById(projectId) {
+        document.getElementById(projectId).classList.add('nav__item--selected');
     }
 
     return {
@@ -309,6 +324,7 @@ export const confirmModal = (function () {
         pubsub.subscribe('openDeleteModal', openDeleteModal);
         pubsub.subscribe('openDetailsModal', openDetailsModal);
         pubsub.subscribe('closeDeleteModal', hiddeModal);
+        pubsub.subscribe('openDeleteProjectModal', openDeleteProjectModal);
         modalCancelButton.addEventListener('click', hiddeModal)
         modalConfirmButton.addEventListener('click', confirmAction);
         modalContainer.addEventListener('animationend', removeModalClasses);
@@ -344,6 +360,7 @@ export const confirmModal = (function () {
         confirmContent.classList.add('show');
     }
 
+
     function firstToUpper(str) {
         return str.charAt(0).toUpperCase().concat(str.slice(1));
     }
@@ -353,6 +370,16 @@ export const confirmModal = (function () {
         modalText.innerHTML = `The task <b>${task.title}</b> will be gone forever.`
         confirmContent.dataset.id = task.id;
         confirmContent.dataset.action = "delete-task";
+        modalCancelButton.textContent = 'Cancel';
+        modalConfirmButton.textContent = 'Delete';
+        modalContainer.classList.add('show');
+        confirmContent.classList.add('show');
+    }
+
+    function openDeleteProjectModal() {
+        modalTitle.textContent = 'Are you sure?';
+        modalText.innerHTML = `This project will be gone forever.`
+        confirmContent.dataset.action = "delete-project";
         modalCancelButton.textContent = 'Cancel';
         modalConfirmButton.textContent = 'Delete';
         modalContainer.classList.add('show');
@@ -372,6 +399,10 @@ export const confirmModal = (function () {
             console.log(confirmContent.dataset.id);
             pubsub.publish('toggleTaskDone', confirmContent.dataset.id);
             pubsub.publish('toggleTaskUI', confirmContent.dataset.id);
+        }
+
+        if(confirmContent.dataset.action === 'delete-project') {
+            pubsub.publish('deleteCurrentProject');
         }
 
         hiddeModal();

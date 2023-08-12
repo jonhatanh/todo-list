@@ -3,7 +3,7 @@ import { Task } from "./task";
 import { Project } from "./project";
 
 export const projectsController = (function() {
-    const projects = [];
+    let projects = [];
     let currentProject = null;
     const generalTasks = new Project('Tasks');
 
@@ -17,6 +17,7 @@ export const projectsController = (function() {
         pubsub.subscribe('loadModal', loadModal);
         pubsub.subscribe('deleteTask', deleteTask);
         pubsub.subscribe('toggleTaskDone', toggleTaskDone);
+        pubsub.subscribe('deleteCurrentProject', deleteCurrentProject);
         if (localStorage.getItem('projects') !== null) {
             loadProjects();
         }
@@ -113,6 +114,20 @@ export const projectsController = (function() {
             });
         }
 
+    }
+
+    function deleteCurrentProject() {
+        console.log('Eliminar', currentProject);
+        projects = projects.filter(project => project.name !== currentProject.name);
+        pubsub.publish('projectDeleted',currentProject.name);
+        currentProject = 'Tasks';
+        checkDefaultProjects('Tasks');
+        pubsub.publish('changeCurrentPageById','Tasks');
+        pubsub.publish('projectAdded', projects);
+        pubsub.publish('showToast', {
+            'icon': 'fa-solid fa-check',
+            'message': 'Project deleted'
+        });
     }
 
     // function loadEditModal(taskId) {

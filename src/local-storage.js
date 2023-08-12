@@ -11,6 +11,7 @@ export class LocalSaves {
         }
         pubsub.subscribe('projectTaskUpdated', this.saveProjectTask.bind(this));
         pubsub.subscribe('projectAdded', this.saveProject.bind(this));
+        pubsub.subscribe('projectDeleted', this.deleteProject.bind(this));
         pubsub.subscribe('taskDeleted', this.removeTask.bind(this));
     }
 
@@ -52,6 +53,14 @@ export class LocalSaves {
         })
         
         console.log(`LOCAL-STORAGE: I'll save the new project`);
+        localStorage.setItem('projects', JSON.stringify(projectsLocal));
+    }
+
+    deleteProject(projectName) {
+        const projectsLocal = JSON.parse(localStorage.getItem('projects'));
+        delete projectsLocal[projectName];
+        
+        console.log(`LOCAL-STORAGE: I'll delete the project`);
         localStorage.setItem('projects', JSON.stringify(projectsLocal));
     }
 
