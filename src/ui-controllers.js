@@ -1,6 +1,7 @@
 import { pubsub } from "./pubsub";
 import {create, addClass, addChilds} from './dom-helper';
 import {Project} from './project';
+import { format, parse } from "date-fns";
 // import { Task } from "./task";
 
 export const pageTitle = (function () {
@@ -125,7 +126,9 @@ export const tasksList = (function () {
         const spanName = addClass(create('span'), 'task__name');
         const spanDate = addClass(create('span'), 'task__date');
         spanName.textContent = task.title;
-        spanDate.textContent = task.date;
+        spanDate.textContent = task.date
+            ? format(parse(task.date, 'yyyy-MM-dd', new Date()), "MMM dd',' yyyy")
+            : '';
         span.dataset.action="task-details";
         addChilds(span, spanName, spanDate);
 
