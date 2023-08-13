@@ -180,7 +180,7 @@ export const projectsList = (function () {
         const div = addClass(create('a'), 'nav__item');
         div.id = project.name;
         const titleContainer = addClass(create('div'), 'nav__item__title');
-        const icon = addClass(create('i'), 'fa-solid', 'fa-list-check');
+        const icon = addClass(create('i'), 'fa-solid', 'fa-list');
         const qtyContainer = addClass(create('div'), 'nav__item__qty');
         qtyContainer.dataset.project = project.name;
         qtyContainer.textContent = project.getNumOfTasks();
@@ -456,6 +456,7 @@ export const mediaQueries = (function () {
         if (match) {
             console.log('More than 400px');
             navContainer.classList.remove('nav--hidden');
+            navContainer.classList.remove('nav--show');
             headerToggle.classList.remove('show');
             navToggle.classList.remove('show');
         } else {
