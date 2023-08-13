@@ -62,9 +62,11 @@ export const projectForm = (function () {
     }
 
     function addProject(e) {
-        if (e.code !== "Enter") return;
+        if (e.keyCode !== 13) return;
         const projectName = input.value.trim();
-        const elementWithSameId = document.querySelector(`#${projectName}`);
+        const elementWithSameId = projectName != ""
+            ? document.querySelector(`#${projectName}`)
+            : null;
         if (projectName === "" 
             || projectName.length > 50
             || projectName.toLowerCase() === 'tasks' 

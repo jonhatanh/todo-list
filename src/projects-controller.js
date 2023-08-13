@@ -18,8 +18,10 @@ export const projectsController = (function() {
         pubsub.subscribe('deleteTask', deleteTask);
         pubsub.subscribe('toggleTaskDone', toggleTaskDone);
         pubsub.subscribe('deleteCurrentProject', deleteCurrentProject);
-        if (localStorage.getItem('projects') !== null) {
+        if (localStorage.getItem('projects') !== null && localStorage.getItem('projects') != '{}') {
             loadProjects();
+        } else {
+            currentProject = 'Tasks';
         }
     }
 
@@ -57,6 +59,10 @@ export const projectsController = (function() {
         }
         projects.push(project);
         pubsub.publish('projectAdded', projects);
+        pubsub.publish("showToast", {
+            icon: "fa-solid fa-check",
+            message: "Project Added"
+        });
     }
 
     function deleteTask(taskId) {

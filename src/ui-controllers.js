@@ -4,7 +4,7 @@ import {Project} from './project';
 // import { Task } from "./task";
 
 export const pageTitle = (function () {
-    const titleContainer = document.querySelector('header .header__title');
+    const titleContainer = document.querySelector('header .header__title h1');
     const deleteBtn = document.querySelector('header .header__options button');
     let actualPage;
 
@@ -19,16 +19,19 @@ export const pageTitle = (function () {
         Project.isDefaultProject(project) 
             ? deleteBtn.style.display = 'none'
             : deleteBtn.style.display = 'block';
-        titleContainer.textContent = '';
-        const i = addClass(create('i'), 'fa-solid', 'fa-list-check');
-        const h1 = create('h1');
-        h1.textContent = project.name;
-        addChilds(titleContainer, i, h1);
+        titleContainer.textContent = project.name;
+        // const i = addClass(create('i'), 'fa-solid', 'fa-list-check');
+        // const h1 = create('h1');
+        // h1.textContent = project.name;
+        // addChilds(titleContainer, i, h1);
+        // addChilds(titleContainer, createNavButton, h1);
     }
 
     function deleteProject(e) {
         pubsub.publish('openDeleteProjectModal');
     }
+
+    
 
     return {
         init,
@@ -65,7 +68,7 @@ export const tasksList = (function () {
     }
 
     function toggleTask(taskId) {
-        const taskContainer = tasksContainer.querySelector(`#${taskId}`);
+        const taskContainer = document.getElementById(taskId);
         if (!taskContainer) return;
         const checkBox = taskContainer.firstChild;
         taskContainer.classList.contains('task--done')
@@ -424,4 +427,49 @@ export const confirmModal = (function () {
     return {
         init,
     };
+})();
+
+
+export const mediaQueries = (function () {
+    const headerToggle = document.getElementById('header-toggle');
+    const navToggle = document.getElementById('nav-toggle');
+    const navContainer = document.querySelector('nav.nav');
+    const navBackground = document.querySelector('.nav-background');
+    const media = window.matchMedia("(min-width: 640px)");
+
+    function init() {
+        applyQueries(media.matches);
+        media.addEventListener('change', applyQueries)
+        headerToggle.addEventListener('click', e => {
+            navContainer.classList.add('nav--show');
+        })
+        navToggle.addEventListener('click', e => {
+            navContainer.classList.remove('nav--show');
+        })
+        navBackground.addEventListener('click', e => {
+            navContainer.classList.remove('nav--show');
+        })
+    }
+
+    function applyQueries(e) {
+        const match = typeof e === 'boolean' ? e : e.target.matches;
+        if (match) {
+            console.log('More than 400px');
+            navContainer.classList.remove('nav--hidden');
+            headerToggle.classList.remove('show');
+            navToggle.classList.remove('show');
+        } else {
+            console.log('Less than 400px');
+            navContainer.classList.add('nav--hidden');
+            headerToggle.classList.add('show');
+            navToggle.classList.add('show');
+        }
+    }
+
+    
+
+    return {
+        init,
+    }
+
 })();

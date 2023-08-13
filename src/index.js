@@ -2,7 +2,7 @@ import "./style.scss";
 
 import { taskForm, projectForm } from "./forms";
 import { projectsController } from "./projects-controller";
-import { pageTitle, tasksList, projectsList, navController, toast, modal, confirmModal } from "./ui-controllers";
+import { pageTitle, tasksList, projectsList, navController, toast, modal, confirmModal, mediaQueries } from "./ui-controllers";
 import { LocalSaves } from "./local-storage";
 
 
@@ -18,6 +18,7 @@ navController.init();
 modal.init();
 confirmModal.init();
 toast.init();
+mediaQueries.init();
 
 
 

@@ -21,9 +21,16 @@ body {
     flex: 1;
     display: grid;
     position: relative;
-    grid-template-columns: 1.5fr 5fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
     grid-template-areas: 
-    "nav list";
+    "list";
+    
+    @media (min-width: 640px) {
+        grid-template-areas: 
+        "nav list";
+        grid-template-columns: 1.5fr 5fr;
+    }
 }
 
 .nav {
@@ -32,9 +39,51 @@ body {
     flex-direction: column;
     gap: 25px;
     background-color: aqua;
-
     padding: 10px 0;
+    transition: 0.3s all;
+    // min-width: 200px;
 
+    &--hidden {
+        position: fixed;
+        right: 100%;
+        top: 0;
+        bottom: 0;
+        left: -100%;
+    }
+
+    &.nav--hidden.nav--show {
+        left: 0;
+        right: 5%;
+        z-index: 10;
+        @media (min-width: 340px) {
+            right: 20%;
+        }
+        @media (min-width: 440px) {
+            right: 40%;
+        }
+        @media (min-width: 540px) {
+            right: 60%;
+        }
+
+        & + .nav-background {
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba($color: #000000, $alpha: 0.3);
+            z-index: 5;
+            display: block;
+        }
+
+    }
+
+    &__title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 }
 
 .nav__user-profile, .nav__title {
@@ -58,6 +107,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    
 } 
 .nav__items__views {
     border-bottom: 1px solid rgba($color: #000000, $alpha: 0.3);
@@ -72,9 +122,9 @@ body {
     text-decoration: none;
     color: inherit;
     align-items: center;
-    padding: 0 15px;
+    padding: 5px 15px;
     position: relative;
-    height: 35px;
+    
 
     &:hover {
         background-color: rgba($color: gray, $alpha: 0.3);
@@ -83,6 +133,7 @@ body {
 .nav__item {
     @extend %nav-item;
     justify-content: space-between;
+    
     
 
     &--selected::before {
@@ -99,6 +150,8 @@ body {
         display: flex;
         gap: 5px;
         align-items: center;
+        overflow-wrap: break-word;
+        word-break: break-all;
     }
     &__qty {
         opacity: 0.7;
@@ -109,6 +162,7 @@ body {
     background-color: inherit;
     padding: 5px 5px;
     outline: none;
+    min-width: 100px;
     &::placeholder {
         color: blue;
         opacity: 1;
@@ -150,13 +204,34 @@ input, button {
 
     header {
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
         align-items: center;
         gap: 20px;
+
+        
         h1 {
             font-size: 1.5rem;
+            overflow-wrap: break-word;
+            word-break: break-all;
         }
     }
+}
+.nav-toggle {
+        display: none;
+        background: none;
+        border: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        place-content: center;
+        cursor: pointer;
+        &:hover {
+            background-color: skyblue;
+        }
+        &.show {
+            display: grid;
+        }
 }
 .header__title {
     display: flex;
@@ -212,7 +287,8 @@ input, button {
     }
     input {
         @extend %transparent-input;
-        width: 100%;
+        // width: 100%;
+        flex: 1;
     }
 
     input[type="date"]::-webkit-calendar-picker-indicator {
@@ -250,11 +326,13 @@ input, button {
 .form-input {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 6px;
-    
     margin: 0 10px;
+    
 
     &-radio {
+        margin: 10px 0;
         label {
             padding: 3px 12px;
             border: 1px solid black;
@@ -276,21 +354,29 @@ input, button {
 .tasks {
     display: grid;
     gap: 15px;
-
-
+    
 }
 
 .task {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: center;
     gap: 5px;
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 0 5px rgba($color: #000000, $alpha: 0.3);
-    
+
+    @media (min-width: 300px) {
+        flex-direction: row;
+    }
+
     &__name {
         flex: 1;
+        overflow-wrap: break-word;
+        word-break: break-all;
+        // text-overflow: ellipsis;
+        // white-space: nowrap;
     }
     
     &--done {
