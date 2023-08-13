@@ -1,9 +1,9 @@
-@use './modal';
-@use './toast';
 @import './colors';
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;500;700&display=swap');
+@import './toast';
+@import './modal';
 
-$opacity: 0.3;
+
 :root {
     --primary: #{$primary};
     --secondary: #{$secondary};
@@ -116,19 +116,21 @@ body {
     display: flex;
     flex-direction: column;
     // gap: 30px;
-}
-.nav__items__views, .nav__items__projects {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    
-} 
-.nav__items__views {
-    border-bottom: 1px solid rgba($color: #000000, $alpha: 0.3);
-    padding-bottom: 20px;
-}
-.nav__items__projects {
-    padding-top: 20px;
+
+    &__views, &__projects {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;    
+    }
+
+    &__views {
+        border-bottom: 1px solid rgba($color: #000000, $alpha: 0.15);
+        padding-bottom: 20px;
+    }
+
+    &__projects {
+        padding-top: 20px;
+    }
 }
 
 %nav-item {
@@ -139,24 +141,21 @@ body {
     padding: 5px 15px;
     position: relative;
     
-
     &:hover {
-        background-color: rgba($color: gray, $alpha: 0.3);
+        background-color: rgba($color: $primary, $alpha: 0.3);
     }
 }
 .nav__item {
     @extend %nav-item;
     justify-content: space-between;
     
-    
-
     &--selected {
         background-color: rgba($color: $primary, $alpha: 0.1);
         
         &::before {
             content: '';
             position: absolute;
-            background-color: blue;
+            background-color: var(--secondary);
             left: 0;
             top: 0;
             bottom: 0;
@@ -191,7 +190,7 @@ body {
     outline: none;
     min-width: 100px;
     &::placeholder {
-        color: blue;
+        color: var(--secondary);
         opacity: 1;
     }
     &:focus::placeholder {
@@ -211,7 +210,7 @@ body {
         @extend %transparent-input;
     }
     i {
-        color: blue;
+        color: var(--secondary);
     }
 
 }
@@ -249,13 +248,14 @@ input, button {
         display: none;
         background: none;
         border: none;
-        width: 25px;
-        height: 25px;
+        width: 30px;
+        height: 30px;
+        padding: 10px;
         border-radius: 50%;
         place-content: center;
         cursor: pointer;
         &:hover {
-            background-color: skyblue;
+            background-color: rgba($color: $primary, $alpha: 0.3);
         }
         &.show {
             display: grid;
@@ -265,15 +265,17 @@ input, button {
     display: flex;
     align-items: center;
     gap: 10px;
+    color: $primary;
 }
 .header__options {
     button {
+        color: $primary;
         padding: 5px 10px;
         background: none;
         border: none;
         border-radius: 10px;
         &:hover {
-            background-color: rgba($color: blue, $alpha: 0.5);
+            background-color: rgba($color: $primary, $alpha: 0.2);
         }
     }
 }
@@ -285,6 +287,8 @@ input, button {
     flex-direction: column;
     gap: 5px;
     margin-top: 10px;
+    padding-top: 15px;
+    background-color: var(--background);
     // form {
     //     display: flex;
     //     flex-direction: column;
@@ -295,15 +299,14 @@ input, button {
             display: flex;
             justify-content: space-between;
             margin: 15px 0 0;
-            padding: 10px;
-            background-color: rgba($color: gray, $alpha: 0.3);
+            background-color: rgba($color: $secondary, $alpha: 0.3);
             button {
                 background: none;
                 border: none;
-                padding: 5px 10px;
+                padding: 15px 20px;
                 &:hover {
-                    background-color: gray;
-                    color: white;
+                    background-color: var(--secondary);
+                    color: var(--text-white);
                 }
             }
         }
@@ -330,13 +333,13 @@ input, button {
         pointer-events: none;
         &:checked + label{
             &.priority-low{
-                background-color: rgba($color: blue, $alpha: 0.3);
+                background-color: rgba($color: $low, $alpha: 0.3);
             }
             &.priority-medium{
-                background-color: rgba($color: yellow, $alpha: 0.3);
+                background-color: rgba($color: $medium, $alpha: 0.3);
             }
             &.priority-high{
-                background-color: rgba($color: red, $alpha: 0.3);
+                background-color: rgba($color: $high, $alpha: 0.3);
             }
             
         }
@@ -344,7 +347,7 @@ input, button {
 
     i {
         min-width: 20px;
-        color: blue;
+        color: var(--primary);
         text-align: center;
     }
     label {
@@ -364,16 +367,18 @@ input, button {
         label {
             padding: 3px 12px;
             border: 1px solid black;
-            border-radius: 15px;
+            transition: 0.2s all;
             cursor: pointer;
             &.priority-low {
-                border-color: blue;
+                border-color: $low;
+                border-radius: 15px 0 0 15px;
             }
             &.priority-medium {
-                border-color: yellow;
+                border-color: $medium;
             }
             &.priority-high {
-                border-color: red;
+                border-color: $high;
+                border-radius: 0 15px 15px 0;
             }
         }
     }
@@ -394,24 +399,69 @@ input, button {
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 0 5px rgba($color: #000000, $alpha: 0.3);
+    background-color: var(--background);
 
     @media (min-width: 300px) {
         flex-direction: row;
     }
 
+    &--low {
+        // background-color: rgba($color: $low, $alpha: 0.07);
+        color: $low;
+        input[type="checkbox"]::before {
+            box-shadow: inset 1em 1em $low;
+        }
+        .task__options button:hover{
+            background-color: rgba($color: $low, $alpha: 0.3);
+        }
+    }
+    &--medium {
+        // background-color: rgba($color: $medium, $alpha: 0.07);
+        color: $medium;
+        input[type="checkbox"]::before {
+            box-shadow: inset 1em 1em $medium;
+        }
+        .task__options button:hover{
+            background-color: rgba($color: $medium, $alpha: 0.3);
+        }
+    }
+    &--high {
+        // background-color: rgba($color: $high, $alpha: 0.07);
+        color: $high;
+        input[type="checkbox"]::before {
+            box-shadow: inset 1em 1em $high;
+        }
+        .task__options button:hover{
+            background-color: rgba($color: $high, $alpha: 0.3);
+        }
+    }
+
+    &__info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        flex: 1;
+    }
+
     &__name {
         flex: 1;
+        color: var(--text-black);
         overflow-wrap: break-word;
         word-break: break-all;
-        // text-overflow: ellipsis;
-        // white-space: nowrap;
+        transition: 0.3s all;
+    }
+    &__date {
+        font-size: 0.8rem;
+        overflow-wrap: break-word;
+        word-break: break-all;
+        transition: 0.3s all;
     }
     
-    &--done {
-        .task__name {
+    &--done {    
+        .task__info {
             opacity: 0.6;
             text-decoration: line-through;
-            
         }
     }
 
@@ -435,7 +485,7 @@ input, button {
             height: 0.5em;
             transform: scale(0);
             transition: 120ms transform ease-in-out;
-            box-shadow: inset 1em 1em blue;
+            // box-shadow: inset 1em 1em var(--secondary);
             border-radius: 50%;
         }
         &:checked::before {
@@ -452,7 +502,7 @@ input, button {
             border: none;
             border-radius: 50%;
             &:hover {
-                background-color: rgba($color: #000000, $alpha: 0.3);
+                color: $text-black;
             }
         }
         i {

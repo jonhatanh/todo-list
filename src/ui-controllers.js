@@ -108,13 +108,27 @@ export const tasksList = (function () {
         const li = addClass(create('li'), 'task');
         li.id = task.id;
         task.done && li.classList.add('task--done');
+        if(task.priority === 'low') {
+            li.classList.add('task--low');
+        } else if(task.priority === 'medium') {
+            li.classList.add('task--medium');
+        } else {
+            li.classList.add('task--high');
+        }
+
         const checkbox = create('input');
         checkbox.type = 'checkbox';
         checkbox.checked = task.done;
         checkbox.dataset.action="task-check";
-        const span = addClass(create('span'), 'task__name');
-        span.textContent = task.title;
+
+        const span = addClass(create('span'), 'task__info');
+        const spanName = addClass(create('span'), 'task__name');
+        const spanDate = addClass(create('span'), 'task__date');
+        spanName.textContent = task.title;
+        spanDate.textContent = task.date;
         span.dataset.action="task-details";
+        addChilds(span, spanName, spanDate);
+
         const taskOptions = addClass(create('div'), 'task__options');
         const editButton = create('button');
         editButton.title = 'Edit';

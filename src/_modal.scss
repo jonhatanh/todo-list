@@ -9,7 +9,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba($color: #000000, $alpha: 0.5);
+    background-color: rgba($color: #000000, $alpha: $opacity);
     // transition: 0.5 all;
     overflow-wrap: break-word;
     word-break: break-all;
@@ -17,7 +17,7 @@
     
     form, .confirm-content {
         display: none;
-        background-color: white;
+        background-color: $background;
         border-radius: 10px;
         width: min(95%, 350px);
         box-shadow: 0 5px 10px rgba($color: #000000, $alpha: 0.7);
@@ -46,12 +46,18 @@
             border-radius: 10px;
 
             &[type="button"] {
-                background-color: red;
+                background-color: $high;
                 color: white;
+                &:hover {
+                    filter: saturate(5);
+                }
             }
             &[type="submit"] {
-                background-color: skyblue;
-                color: white;
+                background-color: $primary;
+                color: $text-white;
+                &:hover {
+                    filter: saturate(5);
+                }
             }
         }
 
@@ -126,7 +132,7 @@
         background-color: rgba($color: #000000, $alpha: 0);
     }
     to {
-        background-color: rgba($color: #000000, $alpha: 0.5);
+        background-color: rgba($color: #000000, $alpha: $opacity);
     }
 }
 @keyframes open-form {
@@ -141,7 +147,7 @@
 }
 @keyframes close-modal {
     from {
-        background-color: rgba($color: #000000, $alpha: 0.5);
+        background-color: rgba($color: #000000, $alpha: $opacity);
     }
     to {
         background-color: rgba($color: #000000, $alpha: 0);
