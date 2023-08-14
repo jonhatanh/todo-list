@@ -88,6 +88,7 @@ body {
             background-color: rgba($color: #000000, $alpha: $opacity);
             z-index: 5;
             display: block;
+            backdrop-filter: blur(2px);
         }
     }
 
@@ -287,8 +288,17 @@ input, button {
     flex-direction: column;
     gap: 5px;
     margin-top: 10px;
-    padding-top: 15px;
+    padding-top: 5px;
     background-color: var(--background);
+
+    .collapse {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.2s ease-out;
+    }
     // form {
     //     display: flex;
     //     flex-direction: column;

@@ -233,6 +233,8 @@ export const navController = (function () {
     function changeActivePage(navItem) {
         document.querySelector('.nav__item--selected')?.classList.remove('nav__item--selected');
         navItem.classList.add('nav__item--selected');
+        navContainer.parentElement.classList.contains('nav--hidden')
+            && navContainer.parentElement.classList.remove('nav--show');
     }
 
     function changeCurrentPageById(projectId) {

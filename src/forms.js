@@ -5,11 +5,16 @@ import { Task } from "./task";
 export const taskForm = (function () {
     const form = document.getElementById('task-form');
     const formUpdate = document.getElementById('update-task-form');
+    const formTitle = document.getElementById('title');
+    const formCollapse = document.getElementById('form-collapsible');
+    const cancelBtn = document.getElementById('cancel-form');
 
     function init() {
 
         formUpdate.addEventListener('submit', updateTask);
         form.addEventListener('submit', addTask);
+        formTitle.addEventListener('focus', collapse);
+        cancelBtn.addEventListener('click', resetForm);
     }
 
     function addTask(e) {
@@ -26,6 +31,7 @@ export const taskForm = (function () {
         console.log("TASK-FORM: task form submitted", task);
         pubsub.publish('taskFormSubmitted', task);
         e.target.reset();
+        formTitle.focus();
     }
     function updateTask(e) {
         e.preventDefault();
@@ -45,6 +51,18 @@ export const taskForm = (function () {
         });
         pubsub.publish('closeEditModal', e);
         e.target.reset();
+    }
+
+    function collapse(e) {
+            // formCollapse.classList.add('active');
+            const inputs = formCollapse.nextElementSibling;
+            inputs.style.maxHeight = inputs.scrollHeight + "px";
+    }
+    function resetForm() {
+        // formCollapse.classList
+        const inputs = formCollapse.nextElementSibling;
+        inputs.style.maxHeight = null;
+        form.reset();
     }
 
     return {
