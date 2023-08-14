@@ -18,9 +18,6 @@ export class Task {
     get done() {
         return this.#done;
     }
-    // set done(value) {
-    //     this.#done = value;
-    // }
 
     get id() {
         return this.#id;

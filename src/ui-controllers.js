@@ -2,7 +2,6 @@ import { pubsub } from "./pubsub";
 import {create, addClass, addChilds} from './dom-helper';
 import {Project} from './project';
 import { format, parse } from "date-fns";
-// import { Task } from "./task";
 
 export const pageTitle = (function () {
     const titleContainer = document.querySelector('header .header__title h1');
@@ -21,18 +20,11 @@ export const pageTitle = (function () {
             ? deleteBtn.style.display = 'none'
             : deleteBtn.style.display = 'block';
         titleContainer.textContent = project.name;
-        // const i = addClass(create('i'), 'fa-solid', 'fa-list-check');
-        // const h1 = create('h1');
-        // h1.textContent = project.name;
-        // addChilds(titleContainer, i, h1);
-        // addChilds(titleContainer, createNavButton, h1);
     }
 
     function deleteProject(e) {
         pubsub.publish('openDeleteProjectModal');
     }
-
-    
 
     return {
         init,
@@ -53,9 +45,6 @@ export const tasksList = (function () {
 
     function renderTasks(tasks) {
         tasksContainer.textContent = '';
-        console.log('TASK-LIST: RENDERING');
-        console.log(tasks);
-        //Add filters here
         tasks.forEach(task => {
             tasksContainer.appendChild(createTaskElement(task));
         })
@@ -84,7 +73,6 @@ export const tasksList = (function () {
         const taskElement = e.target.closest('.task');
         const taskId = e.target.closest('.task').id;
         
-        console.log(action);
         if(action === 'task-details') {
             pubsub.publish('loadModal', {"taskId":taskElement.id, "modal": "DetailsModal"});
         }
@@ -100,10 +88,7 @@ export const tasksList = (function () {
                 ? taskElement.classList.add('task--done')
                 : taskElement.classList.remove('task--done');
         }
-
-        
     }
-
 
     function createTaskElement(task) {
         const li = addClass(create('li'), 'task');
@@ -161,16 +146,10 @@ export const projectsList = (function () {
         pubsub.subscribe('taskDeleted', updateTasksCounter);
         pubsub.subscribe('projectTaskUpdated', updateTasksCounter);
         renderProjects(projects);
-        
-        // projectContainer.addEventListener('click', e => {
-        //     console.log(e.target);
-        //     console.log(e.target.closest('.nav__item').id);
-        // });
     }
 
     function renderProjects(projects) {
         projectContainer.textContent = '';
-        console.log('PROJECT-LIST: RENDERING');
         projects?.forEach(project => {
             projectContainer.appendChild(createProjectElement(project));
         })
@@ -190,8 +169,6 @@ export const projectsList = (function () {
         qtyTodayElement.textContent = project.getTodayTasks().length;
         qtyWeekElement.textContent = project.getWeekTasks().length;
     }
-
-    
 
     function createProjectElement(project) {
         const div = addClass(create('a'), 'nav__item');
@@ -410,7 +387,6 @@ export const confirmModal = (function () {
 
     function confirmAction() {
         if(confirmContent.dataset.action === 'delete-task') {
-            console.log(confirmContent.dataset.id);
             pubsub.publish('deleteTask', confirmContent.dataset.id);
             pubsub.publish('showToast', {
                 'icon': 'fa-solid fa-check',
@@ -418,7 +394,6 @@ export const confirmModal = (function () {
             })
         }
         if(confirmContent.dataset.action === 'details-task') {
-            console.log(confirmContent.dataset.id);
             pubsub.publish('toggleTaskDone', confirmContent.dataset.id);
             pubsub.publish('toggleTaskUI', confirmContent.dataset.id);
         }
@@ -430,19 +405,6 @@ export const confirmModal = (function () {
         hiddeModal();
     }
 
-    // function addTaskToForm(task) {
-    //     confirmContent.dataset.id = task.id;
-    //     modalTitle.value = task.title;
-    //     modalDescription.value = task.description;
-    //     modalDate.value = task.date;
-    //     if(task.priority === 'low') {
-    //         modalLow.checked = true;
-    //     } else if(task.priority === 'medium') {
-    //         modalMedium.checked = true;
-    //     } else {
-    //         modalHigh.checked = true;
-    //     }
-    // }
     return {
         init,
     };
@@ -473,20 +435,16 @@ export const mediaQueries = (function () {
     function applyQueries(e) {
         const match = typeof e === 'boolean' ? e : e.target.matches;
         if (match) {
-            console.log('More than 400px');
             navContainer.classList.remove('nav--hidden');
             navContainer.classList.remove('nav--show');
             headerToggle.classList.remove('show');
             navToggle.classList.remove('show');
         } else {
-            console.log('Less than 400px');
             navContainer.classList.add('nav--hidden');
             headerToggle.classList.add('show');
             navToggle.classList.add('show');
         }
     }
-
-    
 
     return {
         init,
