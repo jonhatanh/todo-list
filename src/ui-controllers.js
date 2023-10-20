@@ -40,7 +40,7 @@ export const tasksList = (function () {
         pubsub.subscribe('loadNewPage', renderProjectTasks);
         pubsub.subscribe('toggleTaskUI', toggleTask);
         renderTasks(tasks);
-        tasksContainer.addEventListener('click', makeAction);
+        tasksContainer.addEventListener('click', makeAction,);
     }
 
     function renderTasks(tasks) {
@@ -68,10 +68,9 @@ export const tasksList = (function () {
     }
 
     function makeAction(e) {
-        if(e.target.dataset.action === undefined) return;
-        const action = e.target.dataset.action;
+        if(e.target.dataset.action === undefined && e.target.closest('[data-action]') == null) return;
+        const action = e.target.dataset.action || e.target.closest('[data-action]').dataset.action;
         const taskElement = e.target.closest('.task');
-        const taskId = e.target.closest('.task').id;
         
         if(action === 'task-details') {
             pubsub.publish('loadModal', {"taskId":taskElement.id, "modal": "DetailsModal"});
@@ -91,16 +90,22 @@ export const tasksList = (function () {
     }
 
     function createTaskElement(task) {
+        const priorityClasses = {
+            'low': 'task--low',
+            'medium': 'task--medium',
+            'high': 'task--high',
+        }
         const li = addClass(create('li'), 'task');
         li.id = task.id;
         task.done && li.classList.add('task--done');
-        if(task.priority === 'low') {
-            li.classList.add('task--low');
-        } else if(task.priority === 'medium') {
-            li.classList.add('task--medium');
-        } else {
-            li.classList.add('task--high');
-        }
+        li.classList.add(priorityClasses[task.priority]);
+        // if(task.priority === 'low') {
+        //     li.classList.add('task--low');
+        // } else if(task.priority === 'medium') {
+        //     li.classList.add('task--medium');
+        // } else {
+        //     li.classList.add('task--high');
+        // }
 
         const checkbox = create('input');
         checkbox.type = 'checkbox';

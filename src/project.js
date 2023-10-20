@@ -11,11 +11,9 @@ export class Project {
     addTask(task, defaultProjectName = null) {
         this.#tasks.push(task);
         console.log(`TASK: ${task.title} added to ${this.name}`);
-        if(defaultProjectName) {
-            this.#pubToDefaultProject(defaultProjectName);
-        } else {
-            pubsub.publish('taskAdded', this.#tasks);
-        }
+        defaultProjectName
+            ? this.#pubToDefaultProject(defaultProjectName)
+            : pubsub.publish('taskAdded', this.#tasks);
         
         pubsub.publish('projectTaskUpdated', {
             "project": this,
@@ -29,11 +27,9 @@ export class Project {
         task.description = taskUpdated.description;
         task.date = taskUpdated.date;
         task.priority = taskUpdated.priority;
-        if(defaultProjectName) {
-            this.#pubToDefaultProject(defaultProjectName);
-        } else {
-            pubsub.publish('taskAdded', this.#tasks);
-        }
+        defaultProjectName
+            ? this.#pubToDefaultProject(defaultProjectName)
+            : pubsub.publish('taskAdded', this.#tasks);
         
         pubsub.publish('projectTaskUpdated', {
             "project": this,
@@ -60,10 +56,15 @@ export class Project {
     }
 
     #pubToDefaultProject(name) {
-        name === "Tasks" && pubsub.publish('taskAdded', this.#tasks);
-        name === "Today" && pubsub.publish('taskAdded', this.getTodayTasks());
-        name === "Week" && pubsub.publish('taskAdded', this.getWeekTasks());
-
+        const defaultProjectsTasks = {
+            'Tasks': this.#tasks,
+            'Today': this.getTodayTasks(),
+            'Week': this.getWeekTasks(),
+        }
+        pubsub.publish('taskAdded', defaultProjectsTasks[name]);
+        // name === "Tasks" && pubsub.publish('taskAdded', this.#tasks);
+        // name === "Today" && pubsub.publish('taskAdded', this.getTodayTasks());
+        // name === "Week" && pubsub.publish('taskAdded', this.getWeekTasks());
     }
 
     getTasks() {

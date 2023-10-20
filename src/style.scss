@@ -187,7 +187,7 @@ body {
 }
 %transparent-input {
     border: none;
-    background-color: inherit;
+    background: none;
     padding: 5px 5px;
     outline: none;
     min-width: 100px;
@@ -199,9 +199,6 @@ body {
         color: gray;
         opacity: initial;
     }
-    &:hover {
-        background: none;
-    }
 }
 .nav__form {
     @extend %nav-item;
@@ -210,6 +207,7 @@ body {
 
     input {
         @extend %transparent-input;
+        flex: 1;
     }
     i {
         color: var(--secondary);
@@ -391,6 +389,10 @@ input, button {
                 border-color: $high;
                 border-radius: 0 15px 15px 0;
             }
+        }
+
+        input[type="radio"]:focus+label{
+            border-width: 2px;
         }
     }
 }
