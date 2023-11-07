@@ -26,8 +26,6 @@ export const projectsController = (function() {
     }
 
     function taskAdded(task) {
-        console.log(`PROJECT-CONTROLLER: I hear that ${task.title} was added`);
-        console.log(currentProject, typeof currentProject);
         typeof currentProject === 'string'
          ? generalTasks.addTask(task, currentProject)
          : currentProject.addTask(task);
@@ -49,7 +47,6 @@ export const projectsController = (function() {
     }
 
     function projectAdded(project) {
-        console.log(`PROJECT-CONTROLLER: I hear that ${project.name} was added`);
         if(isDuplicateProject(project)) {
             pubsub.publish("showToast", {
                 icon: 'fa-solid fa-xmark',
@@ -123,7 +120,6 @@ export const projectsController = (function() {
     }
 
     function deleteCurrentProject() {
-        console.log('Eliminar', currentProject);
         projects = projects.filter(project => project.name !== currentProject.name);
         pubsub.publish('projectDeleted',currentProject.name);
         currentProject = 'Tasks';

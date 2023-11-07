@@ -28,7 +28,6 @@ export const taskForm = (function () {
             data.date.value,
             data.priority.value
         );
-        console.log("TASK-FORM: task form submitted", task);
         pubsub.publish('taskFormSubmitted', task);
         e.target.reset();
         formTitle.focus();
@@ -44,7 +43,6 @@ export const taskForm = (function () {
             data.date.value,
             data.priority.value
         );
-        console.log("EDIT-TASK-FORM: task form submitted", task);
         pubsub.publish('taskUpdateSubmitted', {
             "taskId": e.target.dataset.id,
             "taskUpdated": task

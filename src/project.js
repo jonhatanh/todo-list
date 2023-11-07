@@ -10,7 +10,6 @@ export class Project {
 
     addTask(task, defaultProjectName = null) {
         this.#tasks.push(task);
-        console.log(`TASK: ${task.title} added to ${this.name}`);
         defaultProjectName
             ? this.#pubToDefaultProject(defaultProjectName)
             : pubsub.publish('taskAdded', this.#tasks);
